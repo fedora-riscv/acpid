@@ -7,7 +7,6 @@ Group: System Environment/Daemons
 Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
 Source1: acpid.logrotate
 Source2: acpid.init
-Patch0: acpid-1.0.3-pm1.patch
 Patch1: acpid-1.0.3-conf.patch
 Patch2: acpid-1.0.3-makefile.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
@@ -22,7 +21,6 @@ acpid is a daemon that dispatches ACPI events to user-space programs.
 
 %prep
 %setup
-%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 
