@@ -1,13 +1,15 @@
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 1.0.2
-Release: 7
-Copyright: GPL
+Version: 1.0.3
+Release: 2
+License: GPL
 Group: System Environment/Daemons
 Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
+Source1: acpid.logrotate
 Source2: acpid.init
-Patch: acpid-1.0.1-pm1.diff
-Patch2: acpid-1.0.1-conf.patch
+Patch0: acpid-1.0.3-pm1.patch
+Patch1: acpid-1.0.3-conf.patch
+Patch2: acpid-1.0.3-makefile.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 ExclusiveArch: ia64 x86_64 %{ix86}
 URL: http://acpid.sourceforge.net/
@@ -20,7 +22,8 @@ acpid is a daemon that dispatches ACPI events to user-space programs.
 
 %prep
 %setup
-%patch -p1
+%patch0 -p1
+%patch1 -p1
 %patch2 -p1
 
 %build
@@ -41,9 +44,11 @@ mkdir -p $RPM_BUILD_ROOT/var/log
 touch $RPM_BUILD_ROOT/var/log/acpid
 chmod 640 $RPM_BUILD_ROOT/var/log/acpid
 
+mkdir -p $RPM_BUILD_ROOT/etc/logrotate.d
+install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/etc/logrotate.d/acpid
+
 mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
 install -m 755 %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/acpid
-chmod 755 $RPM_BUILD_ROOT/etc/rc.d/init.d/acpid
 
 
 %clean
@@ -56,10 +61,13 @@ rm -rf $RPM_BUILD_ROOT
 %dir /etc/acpi/events
 %dir /etc/acpi/actions
 %config %attr(0644,root,root) /etc/acpi/events/sample.conf
-/var/log/acpid
+%config /etc/logrotate.d/acpid
+%verify(not md5 size mtime) %ghost %config(missingok,noreplace) /var/log/acpid
+/usr/bin/acpi_listen
 /usr/sbin/acpid
 %attr(0755,root,root) /etc/rc.d/init.d/acpid
 /usr/share/man/man8/acpid.8.gz
+/usr/share/man/man8/acpi_listen.8.gz
 
 
 %post
@@ -67,11 +75,25 @@ rm -rf $RPM_BUILD_ROOT
 
 %preun
 if [ "$1" = "0" ]; then
-	service acpid stop >/dev/null 2>&1
+	/sbin/service acpid stop >/dev/null 2>&1
 	/sbin/chkconfig --del acpid
 fi
 
+%postun
+if [ "$1" -ge "1" ]; then
+	/sbin/service acpid condrestart >/dev/null 2>&1
+fi
+
 %changelog
+* Mon Aug  9 2004 Miloslav Trmac <mitr@redhat.com> - 1.0.3-2
+- Update to 1.0.3 (fixes #128834)
+- s/Copyright/License/
+- Add logrotate config file (#110677, from Michal Jaegermann)
+- Don't verify contents of /var/log/acpid (#125862)
+- Use $RPM_OPT_FLAGS
+- Fix and cleanup acpid-1.0.1-pm1.patch
+- Add condrestart to %%postun
+
 * Tue Jun 15 2004 Elliot Lee <sopwith@redhat.com>
 - rebuilt
 
