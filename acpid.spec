@@ -1,16 +1,16 @@
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 1.0.1
-Release: 4
+Version: 1.0.2
+Release: 5
 Copyright: GPL
 Group: System Environment/Daemons
-Source: acpid-1.0.1.tar.gz
+Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
 Source2: acpid.init
 Patch: acpid-1.0.1-pm1.diff
 Patch2: acpid-1.0.1-conf.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
-ExclusiveArch: ia64 i386 x86_64
-URL: http://acpid.sourceforge.net
+ExclusiveArch: ia64 x86_64 i386
+URL: http://acpid.sourceforge.net/
 Prereq: /sbin/chkconfig, /sbin/service
 
 
@@ -46,12 +46,16 @@ install -m 755 %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/acpid
 chmod 755 $RPM_BUILD_ROOT/etc/rc.d/init.d/acpid
 
 
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+
 %files
 %defattr(-,root,root)
 %dir /etc/acpi
 %dir /etc/acpi/events
 %dir /etc/acpi/actions
-%attr(0644,root,root) /etc/acpi/events/sample.conf
+%config %attr(0644,root,root) /etc/acpi/events/sample.conf
 /var/log/acpid
 /usr/sbin/acpid
 %attr(0755,root,root) /etc/rc.d/init.d/acpid
@@ -68,6 +72,23 @@ if [ "$1" = "0" ]; then
 fi
 
 %changelog
+* Wed Oct 22 2003  Bill Nottingham <notting@redhat.com> 1.0.2-5
+- fix handling of sample.conf (#107160)
+- mark for translations (#107459)
+
+* Sun Oct 19 2003 Florian La Roche <Florian.LaRoche@redhat.de>
+- add %%clean specfile target
+
+* Wed Oct  1 2003  Bill Nottingham <notting@redhat.com> 1.0.2-3
+- re-enable x86
+- don't load the button module
+
+* Thu Aug  7 2003  Bill Nottingham <notting@redhat.com> 1.0.2-2
+- no x86 for now
+
+* Mon Jul  7 2003  Bill Nottingham <notting@redhat.com> 1.0.2-1
+- update to 1.0.2
+
 * Wed Dec 11 2002  Bill Nottingham <notting@redhat.com> 1.0.1-4
 - don't start if /proc/acpi/event isn't there
 

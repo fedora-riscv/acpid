@@ -11,8 +11,6 @@
 # Source function library.
 . /etc/rc.d/init.d/functions
 
-DAEMON=acpi
-PROGNAME=${DAEMON}d
 [ -x /usr/sbin/acpid ] || exit 0
 [ -f /proc/acpi/event ] || exit 0
 
@@ -24,22 +22,21 @@ RETVAL=0
 
 start() {
 	# Check if it is already running
-	if [ ! -f /var/lock/subsys/$PROGNAME ]; then
+	if [ ! -f /var/lock/subsys/acpid ]; then
 	    echo -n $"Starting acpi daemon: "
-	    modprobe button > /dev/null 2>&1
-	    daemon /usr/sbin/$PROGNAME
+	    daemon /usr/sbin/acpid
 	    RETVAL=$?
-	    [ $RETVAL -eq 0 ] && touch /var/lock/subsys/$PROGNAME
+	    [ $RETVAL -eq 0 ] && touch /var/lock/subsys/acpid
 	    echo
 	fi
 	return $RETVAL
 }
 
 stop() {
-	echo -n "Stopping $DAEMON daemon: "
-	killproc /usr/sbin/$PROGNAME
+	echo -n $"Stopping acpi daemon: "
+	killproc /usr/sbin/acpid
 	RETVAL=$?
-	[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/$PROGNAME
+	[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/acpid
 	echo
         return $RETVAL
 }
@@ -52,7 +49,7 @@ restart() {
 
 reload() {
 	trap "" SIGHUP
-	killall -HUP $PROGNAME
+	killall -HUP acpid
 }	
 
 case "$1" in
@@ -69,12 +66,12 @@ restart)
 	restart
 	;;
 condrestart)
-	if [ -f /var/lock/subsys/$PROGNAME ]; then
+	if [ -f /var/lock/subsys/acpid ]; then
 	    restart
 	fi
 	;;
 status)
-	status $PROGNAME
+	status acpid
 	;;
 *)
 	echo $"Usage: $0 {start|stop|status|restart|condrestart|reload}"
