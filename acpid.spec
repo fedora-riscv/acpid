@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 1.0.2
-Release: 6
+Release: 7
 Copyright: GPL
 Group: System Environment/Daemons
 Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
@@ -9,7 +9,7 @@ Source2: acpid.init
 Patch: acpid-1.0.1-pm1.diff
 Patch2: acpid-1.0.1-conf.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
-ExclusiveArch: ia64 x86_64 i386
+ExclusiveArch: ia64 x86_64 %{ix86}
 URL: http://acpid.sourceforge.net/
 Prereq: /sbin/chkconfig, /sbin/service
 
@@ -72,6 +72,9 @@ if [ "$1" = "0" ]; then
 fi
 
 %changelog
+* Tue Jun 15 2004 Elliot Lee <sopwith@redhat.com>
+- rebuilt
+
 * Fri Feb 13 2004 Elliot Lee <sopwith@redhat.com>
 - rebuilt
 
