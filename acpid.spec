@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 1.0.2
-Release: 5
+Release: 6
 Copyright: GPL
 Group: System Environment/Daemons
 Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
@@ -72,6 +72,9 @@ if [ "$1" = "0" ]; then
 fi
 
 %changelog
+* Fri Feb 13 2004 Elliot Lee <sopwith@redhat.com>
+- rebuilt
+
 * Wed Oct 22 2003  Bill Nottingham <notting@redhat.com> 1.0.2-5
 - fix handling of sample.conf (#107160)
 - mark for translations (#107459)
