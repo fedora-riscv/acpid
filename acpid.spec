@@ -9,6 +9,7 @@ Source1: acpid.logrotate
 Source2: acpid.init
 Patch1: acpid-1.0.3-conf.patch
 Patch2: acpid-1.0.3-makefile.patch
+Patch3: acpid-1.0.4-warning.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 ExclusiveArch: ia64 x86_64 %{ix86}
 URL: http://acpid.sourceforge.net/
@@ -21,8 +22,9 @@ acpid is a daemon that dispatches ACPI events to user-space programs.
 
 %prep
 %setup
-%patch1 -p1
-%patch2 -p1
+%patch1 -p1 -b .conffile
+%patch2 -p1 -b .makefile
+%patch3 -p1 -b .warning
 
 %build
 make
