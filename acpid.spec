@@ -1,12 +1,13 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 1.0.4
-Release: 1.2
+Release: 2
 License: GPL
 Group: System Environment/Daemons
 Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
 Source1: acpid.logrotate
 Source2: acpid.init
+Source3: acpid.video.conf
 Patch1: acpid-1.0.3-conf.patch
 Patch2: acpid-1.0.3-makefile.patch
 Patch3: acpid-1.0.4-warning.patch
@@ -39,6 +40,7 @@ mkdir -p $RPM_BUILD_ROOT/etc/acpi/events
 mkdir -p $RPM_BUILD_ROOT/etc/acpi/actions
 chmod 755 $RPM_BUILD_ROOT/etc/acpi/events
 install -m 644 samples/sample.conf $RPM_BUILD_ROOT/etc/acpi/events
+install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/etc/acpi/events/video.conf
 
 mkdir -p $RPM_BUILD_ROOT/var/log
 touch $RPM_BUILD_ROOT/var/log/acpid
@@ -61,6 +63,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir /etc/acpi/events
 %dir /etc/acpi/actions
 %config %attr(0644,root,root) /etc/acpi/events/sample.conf
+%config %attr(0644,root,root) /etc/acpi/events/video.conf
 %config /etc/logrotate.d/acpid
 %verify(not md5 size mtime) %ghost %config(missingok,noreplace) /var/log/acpid
 /usr/bin/acpi_listen
@@ -85,6 +88,10 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Wed Mar 01 2006 Phil Knirsch <pknirsch@redhat.com> - 1.0.4-2
+- Added video.conf file to turn on DPMS when opening the laptop lid. Disabled
+  by default.
+
 * Tue Feb 07 2006 Jesse Keating <jkeating@redhat.com> - 1.0.4-1.2
 - rebuilt for new gcc4.1 snapshot and glibc changes
 
