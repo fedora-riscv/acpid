@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 1.0.4
-Release: 2
+Release: 2.1
 License: GPL
 Group: System Environment/Daemons
 Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
@@ -88,6 +88,9 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Wed Jul 12 2006 Jesse Keating <jkeating@redhat.com> - 1.0.4-2.1
+- rebuild
+
 * Wed Mar 01 2006 Phil Knirsch <pknirsch@redhat.com> - 1.0.4-2
 - Added video.conf file to turn on DPMS when opening the laptop lid. Disabled
   by default.
