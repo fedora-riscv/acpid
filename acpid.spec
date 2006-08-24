@@ -38,7 +38,6 @@ make install INSTPREFIX=$RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/etc/acpi/events
 mkdir -p $RPM_BUILD_ROOT/etc/acpi/actions
 chmod 755 $RPM_BUILD_ROOT/etc/acpi/events
-install -m 644 samples/sample.conf $RPM_BUILD_ROOT/etc/acpi/events
 install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/etc/acpi/events/video.conf
 install -m 644 %{SOURCE4} $RPM_BUILD_ROOT/etc/acpi/events/power.conf
 
@@ -90,6 +89,7 @@ fi
 %changelog
 * Thu Aug 24 2006 Phil Knirsch <pknirsch@redhat.com> - 1.0.4-4
 - Made a better fix for the powerdown button which checks if g-p-m is running
+- Don't install sample.conf anymore, not needed
 
 * Thu Aug 10 2006 Phil Knirsch <pknirsch@redhat.com> - 1.0.4-3
 - Disable the automatic shutdown -h via powerdown button by default due to
