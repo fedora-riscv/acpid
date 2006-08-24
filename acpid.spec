@@ -1,13 +1,14 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 1.0.4
-Release: 3
+Release: 4
 License: GPL
 Group: System Environment/Daemons
 Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
 Source1: acpid.logrotate
 Source2: acpid.init
 Source3: acpid.video.conf
+Source4: acpid.power.conf
 Patch2: acpid-1.0.3-makefile.patch
 Patch3: acpid-1.0.4-warning.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
@@ -39,6 +40,7 @@ mkdir -p $RPM_BUILD_ROOT/etc/acpi/actions
 chmod 755 $RPM_BUILD_ROOT/etc/acpi/events
 install -m 644 samples/sample.conf $RPM_BUILD_ROOT/etc/acpi/events
 install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/etc/acpi/events/video.conf
+install -m 644 %{SOURCE4} $RPM_BUILD_ROOT/etc/acpi/events/power.conf
 
 mkdir -p $RPM_BUILD_ROOT/var/log
 touch $RPM_BUILD_ROOT/var/log/acpid
@@ -60,8 +62,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir /etc/acpi
 %dir /etc/acpi/events
 %dir /etc/acpi/actions
-%config %attr(0644,root,root) /etc/acpi/events/sample.conf
 %config %attr(0644,root,root) /etc/acpi/events/video.conf
+%config %attr(0644,root,root) /etc/acpi/events/power.conf
 %config /etc/logrotate.d/acpid
 %verify(not md5 size mtime) %ghost %config(missingok,noreplace) /var/log/acpid
 /usr/bin/acpi_listen
@@ -86,6 +88,9 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Thu Aug 24 2006 Phil Knirsch <pknirsch@redhat.com> - 1.0.4-4
+- Made a better fix for the powerdown button which checks if g-p-m is running
+
 * Thu Aug 10 2006 Phil Knirsch <pknirsch@redhat.com> - 1.0.4-3
 - Disable the automatic shutdown -h via powerdown button by default due to
   conflicts with gnome-power-manager
