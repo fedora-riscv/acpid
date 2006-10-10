@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 1.0.4
-Release: 4
+Release: 5
 License: GPL
 Group: System Environment/Daemons
 Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
@@ -9,8 +9,9 @@ Source1: acpid.logrotate
 Source2: acpid.init
 Source3: acpid.video.conf
 Source4: acpid.power.conf
-Patch2: acpid-1.0.3-makefile.patch
-Patch3: acpid-1.0.4-warning.patch
+Patch1: acpid-1.0.3-makefile.patch
+Patch2: acpid-1.0.4-warning.patch
+Patch3: acpid-1.0.4-pie.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 ExclusiveArch: ia64 x86_64 %{ix86}
 URL: http://acpid.sourceforge.net/
@@ -23,8 +24,9 @@ acpid is a daemon that dispatches ACPI events to user-space programs.
 
 %prep
 %setup
-%patch2 -p1 -b .makefile
-%patch3 -p1 -b .warning
+%patch1 -p1 -b .makefile
+%patch2 -p1 -b .warning
+%patch3 -p1 -b .pie
 
 %build
 make
@@ -87,6 +89,9 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Tue Oct 10 2006 Phil Knirsch <pknirsch@redhat.com> - 1.0.4-5
+- Made acpid a PIE binary (#210016)
+
 * Thu Aug 24 2006 Phil Knirsch <pknirsch@redhat.com> - 1.0.4-4
 - Made a better fix for the powerdown button which checks if g-p-m is running
 - Don't install sample.conf anymore, not needed
