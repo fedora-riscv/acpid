@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 1.0.4
-Release: 5
+Release: 6%{?dist}
 License: GPL
 Group: System Environment/Daemons
 Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
@@ -12,10 +12,12 @@ Source4: acpid.power.conf
 Patch1: acpid-1.0.3-makefile.patch
 Patch2: acpid-1.0.4-warning.patch
 Patch3: acpid-1.0.4-pie.patch
-BuildRoot: %{_tmppath}/%{name}-%{version}-root
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: ia64 x86_64 %{ix86}
 URL: http://acpid.sourceforge.net/
-Prereq: /sbin/chkconfig, /sbin/service
+Requires(post): /sbin/chkconfig
+Requires(preun): /sbin/chkconfig
+Requires(preun): /sbin/service
 
 
 %description
@@ -23,13 +25,13 @@ acpid is a daemon that dispatches ACPI events to user-space programs.
 
 
 %prep
-%setup
+%setup -q
 %patch1 -p1 -b .makefile
 %patch2 -p1 -b .warning
 %patch3 -p1 -b .pie
 
 %build
-make
+make %{?_smp_mflags}
 
 
 %install
@@ -37,21 +39,21 @@ rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT
 make install INSTPREFIX=$RPM_BUILD_ROOT
 
-mkdir -p $RPM_BUILD_ROOT/etc/acpi/events
-mkdir -p $RPM_BUILD_ROOT/etc/acpi/actions
-chmod 755 $RPM_BUILD_ROOT/etc/acpi/events
-install -m 644 %{SOURCE3} $RPM_BUILD_ROOT/etc/acpi/events/video.conf
-install -m 644 %{SOURCE4} $RPM_BUILD_ROOT/etc/acpi/events/power.conf
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/acpi/actions
+chmod 755 $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events
+install -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events/video.conf
+install -m 644 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events/power.conf
 
 mkdir -p $RPM_BUILD_ROOT/var/log
 touch $RPM_BUILD_ROOT/var/log/acpid
 chmod 640 $RPM_BUILD_ROOT/var/log/acpid
 
-mkdir -p $RPM_BUILD_ROOT/etc/logrotate.d
-install -m 644 %{SOURCE1} $RPM_BUILD_ROOT/etc/logrotate.d/acpid
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
+install -m 644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/acpid
 
-mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
-install -m 755 %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/acpid
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d
+install -m 755 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/acpid
 
 
 %clean
@@ -60,18 +62,19 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%dir /etc/acpi
-%dir /etc/acpi/events
-%dir /etc/acpi/actions
-%config %attr(0644,root,root) /etc/acpi/events/video.conf
-%config %attr(0644,root,root) /etc/acpi/events/power.conf
-%config /etc/logrotate.d/acpid
+%doc COPYING README Changelog TODO
+%dir %{_sysconfdir}/acpi
+%dir %{_sysconfdir}/acpi/events
+%dir %{_sysconfdir}/acpi/actions
+%config(noreplace) %attr(0644,root,root) %{_sysconfdir}/acpi/events/video.conf
+%config(noreplace) %attr(0644,root,root) %{_sysconfdir}/acpi/events/power.conf
+%config(noreplace) %{_sysconfdir}/logrotate.d/acpid
 %verify(not md5 size mtime) %ghost %config(missingok,noreplace) /var/log/acpid
-/usr/bin/acpi_listen
-/usr/sbin/acpid
-%attr(0755,root,root) /etc/rc.d/init.d/acpid
-/usr/share/man/man8/acpid.8.gz
-/usr/share/man/man8/acpi_listen.8.gz
+%{_bindir}/acpi_listen
+%{_sbindir}/acpid
+%attr(0755,root,root) %{_sysconfdir}/rc.d/init.d/acpid
+%{_mandir}/man8/acpid.8.gz
+%{_mandir}/man8/acpi_listen.8.gz
 
 
 %post
@@ -89,6 +92,9 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Wed Feb 07 2007 Phil Knirsch <pknirsch@redhat.com> - 1.0.4-6.fc7
+- Tons of specfile changes due to review (#225237)
+
 * Tue Oct 10 2006 Phil Knirsch <pknirsch@redhat.com> - 1.0.4-5
 - Made acpid a PIE binary (#210016)
 
