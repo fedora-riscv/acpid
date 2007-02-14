@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 1.0.4
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: GPL
 Group: System Environment/Daemons
 Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
@@ -69,7 +69,6 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/acpi/events/video.conf
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/acpi/events/power.conf
 %config(noreplace) %{_sysconfdir}/logrotate.d/acpid
-%verify(not md5 size mtime) %ghost %config(missingok,noreplace) /var/log/acpid
 %{_bindir}/acpi_listen
 %{_sbindir}/acpid
 %attr(0755,root,root) %{_sysconfdir}/rc.d/init.d/acpid
@@ -92,6 +91,9 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Wed Feb 14 2007 Phil Knirsch <pknirsch@redhat.com> - 1.0.4-7.fc7
+- Dropped /var/log/acpid ownership as per review (225237)
+
 * Wed Feb 07 2007 Phil Knirsch <pknirsch@redhat.com> - 1.0.4-6.fc7
 - Tons of specfile changes due to review (#225237)
 
