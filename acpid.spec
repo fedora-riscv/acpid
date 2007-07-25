@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 1.0.4
-Release: 7%{?dist}
+Release: 8%{?dist}
 License: GPL
 Group: System Environment/Daemons
 Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
@@ -87,6 +87,10 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Wed Jul 25 2007 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.4-8.fc8
+- Fixed init script to comply with LSB standard
+- Resolves: #237754
+
 * Wed Feb 14 2007 Phil Knirsch <pknirsch@redhat.com> - 1.0.4-7.fc7
 - Dropped /var/log/acpid ownership as per review (225237)
 
