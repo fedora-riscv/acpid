@@ -85,7 +85,7 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
-* Tue Aug 07 2007 Zdenek Prikryl <zdprikryl@redhat.com> - 1.0.6-1.fc8
+* Tue Aug 07 2007 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.6-1.fc8
 - Updated to version 1.0.6
 
 * Wed Jul 25 2007 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.4-8.fc8
