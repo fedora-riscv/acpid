@@ -1,0 +1,12 @@
+--- acpid-1.0.6/Makefile.flags	2007-06-30 21:15:45.000000000 +0200
++++ acpid-1.0.6/Makefile	2007-08-07 10:29:18.000000000 +0200
+@@ -21,7 +21,8 @@ acpi_listen_OBJS = $(acpi_listen_SRCS:.c
+ MAN8 = acpid.8 acpi_listen.8
+ MAN8GZ = $(MAN8:.8=.8.gz)
+ 
+-CFLAGS = -Wall -Werror -g $(DEFS)
++CFLAGS = -Wall -Werror -g $(DEFS) $(RPM_OPT_FLAGS) -fPIE
++LDFLAGS = -pie -Wl,-z,relro
+ DEFS = -DVERSION="\"$(VERSION)\""
+ 
+ all: $(PROGS)
