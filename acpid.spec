@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 1.0.4
-Release: 7%{?dist}
+Release: 8%{?dist}
 License: GPL
 Group: System Environment/Daemons
 Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
@@ -12,6 +12,7 @@ Source4: acpid.power.conf
 Patch1: acpid-1.0.3-makefile.patch
 Patch2: acpid-1.0.4-warning.patch
 Patch3: acpid-1.0.4-pie.patch
+Patch4: acpid-1.0.4-fd.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: ia64 x86_64 %{ix86}
 URL: http://acpid.sourceforge.net/
@@ -29,6 +30,7 @@ acpid is a daemon that dispatches ACPI events to user-space programs.
 %patch1 -p1 -b .makefile
 %patch2 -p1 -b .warning
 %patch3 -p1 -b .pie
+%patch4 -p1 -b .fd
 
 %build
 make %{?_smp_mflags}
@@ -87,6 +89,9 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Wed Sep 26 2007 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.4-8.fc7
+- Fixed leak of a file descriptor (#304761)
+
 * Wed Feb 14 2007 Phil Knirsch <pknirsch@redhat.com> - 1.0.4-7.fc7
 - Dropped /var/log/acpid ownership as per review (225237)
 

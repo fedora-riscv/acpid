@@ -1,0 +1,39 @@
+--- acpid-1.0.4.orig/acpid.c	2007-09-24 17:05:07.000000000 -0400
++++ acpid-1.0.4/acpid.c	2007-09-24 17:12:19.000000000 -0400
+@@ -396,13 +396,13 @@ open_logs(void)
+ 	int nullfd;
+ 
+ 	/* set up stdout, stderr to log and stdin to /dev/null */
+-	nullfd = open("/dev/null", O_RDONLY, 0640);
++	nullfd = open("/dev/null", O_RDONLY);
+ 	if (nullfd < 0) {
+ 		fprintf(stderr, "%s: can't open %s: %s\n", progname, 
+ 			"/dev/null", strerror(errno));
+ 		return -1;
+ 	}
+-	logfd = open(logfile, O_WRONLY|O_CREAT|O_APPEND);
++	logfd = open(logfile, O_WRONLY|O_CREAT|O_APPEND, 0640);
+ 	if (logfd < 0) {
+ 		fprintf(stderr, "%s: can't open %s: %s\n", progname, 
+ 			logfile, strerror(errno));
+diff -urp acpid-1.0.4.orig/event.c acpid-1.0.4/event.c
+--- acpid-1.0.4.orig/event.c	2007-09-24 17:05:07.000000000 -0400
++++ acpid-1.0.4/event.c	2007-09-24 17:33:56.000000000 -0400
+@@ -302,6 +302,7 @@ parse_file(const char *file)
+ 			acpid_log("DBG: skipping incomplete file %s\n", file);
+ 		}
+ 		free_rule(r);
++		fclose(fp);
+ 		return NULL;
+ 	}
+ 	fclose(fp);
+@@ -641,7 +642,7 @@ parse_cmd(const char *cmd, const char *e
+ 	i = 0;
+ 
+ 	memset(buf, 0, sizeof(buf));
+-	while (i < (sizeof(buf)-1)) {
++	while ((size_t)i < (sizeof(buf)-1)) {
+ 		if (*p == '%') {
+ 			p++;
+ 			if (*p == 'e') {
+
