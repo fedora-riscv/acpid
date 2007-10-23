@@ -87,7 +87,7 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
-* Thu Oct 11 2007 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.6-3.fc9
+* Thu Oct 23 2007 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.6-3.fc9
 - Silent initscript
 - Resolves: #345611
 
