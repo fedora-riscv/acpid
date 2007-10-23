@@ -30,19 +30,17 @@ RETVAL=0
 start() {
 	# Check if it is already running
 	if [ ! -f /var/lock/subsys/acpid ]; then
-	    echo -n $"Starting acpi daemon: "	
 		# Check if acpid is executable
 		if [ ! -x /usr/sbin/acpid ]; then
 			logger -p daemon.error -t $0 "/usr/sbin/acpid is not executable."
-			echo_failure
 			exit 1
 		fi
 		# Check for kernel support
 		if [ ! -f /proc/acpi/event ]; then
 			logger -p daemon.error -t $0 "need ACPI_PROC_EVENT support in kernel."
-			echo_failure
 			exit 1
 		fi
+		echo -n $"Starting acpi daemon: "	
 	    daemon /usr/sbin/acpid $@
 	    RETVAL=$?
 	    [ $RETVAL -eq 0 ] && touch /var/lock/subsys/acpid
