@@ -30,18 +30,18 @@ RETVAL=0
 start() {
 	# Check if acpid is executable
 	if [ ! -x /usr/sbin/acpid ]; then
-		echo "$0: acpid is not executable."
+		logger -p daemon.error -t $0 "/usr/sbin/acpid is not executable."
 		exit 1
 	fi
 	# Check for kernel support
 	if [ ! -f /proc/acpi/event ]; then
-		echo "$0: need ACPI_PROC_EVENT support in kernel."  //zmena podle 260181
+		logger -p daemon.error -t $0 "need ACPI_PROC_EVENT support in kernel."
 		exit 1
 	fi
 	# Check if it is already running
 	if [ ! -f /var/lock/subsys/acpid ]; then
 	    echo -n $"Starting acpi daemon: "
-	    daemon /usr/sbin/acpid
+	    daemon /usr/sbin/acpid $@
 	    RETVAL=$?
 	    [ $RETVAL -eq 0 ] && touch /var/lock/subsys/acpid
 	    echo
@@ -61,7 +61,7 @@ stop() {
 
 restart() {
 	stop
-	start
+	start $@
 }	
 
 reload() {
@@ -73,7 +73,7 @@ reload() {
 
 case "$1" in
 start)
-	start
+	start $2
 	;;
 stop)
 	stop
@@ -86,11 +86,11 @@ force-reload)
 	RETVAL=3
 	;;
 restart)
-	restart
+	restart $2
 	;;
 condrestart)
 	if [ -f /var/lock/subsys/acpid ]; then
-	    restart
+	    restart $2
 	fi
 	;;
 status)
