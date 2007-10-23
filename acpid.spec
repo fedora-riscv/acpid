@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 1.0.6
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: GPL
 Group: System Environment/Daemons
 Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
