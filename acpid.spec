@@ -88,7 +88,7 @@ fi
 
 %changelog
 * Thu Oct 11 2007 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.6-3.fc9
-- Errors from init script are logged
+- Silent initscript
 - Resolves: #345611
 
 * Wed Sep 26 2007 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.6-2.fc8
