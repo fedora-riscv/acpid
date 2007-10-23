@@ -21,6 +21,15 @@
 # Source function library.
 . /etc/rc.d/init.d/functions
 
+# Check that we're a priviledged user
+[ `id -u` = 0 ] || exit 1
+
+# Check if acpid is executable
+test -x /usr/sbin/acpid || exit 1
+
+# Check for kernel support
+[ -f /proc/acpi/event ] || exit 1
+
 RETVAL=0
 
 #
@@ -30,16 +39,6 @@ RETVAL=0
 start() {
 	# Check if it is already running
 	if [ ! -f /var/lock/subsys/acpid ]; then
-		# Check if acpid is executable
-		if [ ! -x /usr/sbin/acpid ]; then
-			logger -p daemon.error -t $0 "/usr/sbin/acpid is not executable."
-			exit 1
-		fi
-		# Check for kernel support
-		if [ ! -f /proc/acpi/event ]; then
-			logger -p daemon.error -t $0 "need ACPI_PROC_EVENT support in kernel."
-			exit 1
-		fi
 		echo -n $"Starting acpi daemon: "	
 	    daemon /usr/sbin/acpid $@
 	    RETVAL=$?
