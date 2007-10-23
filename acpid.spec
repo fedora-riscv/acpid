@@ -87,6 +87,10 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Thu Oct 23 2007 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.6-3.fc8
+- Silent initscript
+- Resolves: #345611
+
 * Wed Sep 26 2007 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.6-2.fc8
 - Fixed leak of a file descriptor
 - Resolves: #304761
