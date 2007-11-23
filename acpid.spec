@@ -1,17 +1,17 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 1.0.6
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: GPL
 Group: System Environment/Daemons
 Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
-Source1: acpid.logrotate
-Source2: acpid.init
-Source3: acpid.video.conf
-Source4: acpid.power.conf
+Source1: acpid.init
+Source2: acpid.video.conf
+Source3: acpid.power.conf
 Patch1: acpid-1.0.6-makefile.patch
 Patch2: acpid-1.0.6-return.patch
 Patch3: acpid-1.0.6-fd.patch
+Patch4: acpid-1.0.6-log.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: ia64 x86_64 %{ix86}
 URL: http://acpid.sourceforge.net/
@@ -29,6 +29,7 @@ acpid is a daemon that dispatches ACPI events to user-space programs.
 %patch1 -p1 -b .makefile
 %patch2 -p1 -b .return
 %patch3 -p1 -b .fd
+%patch4 -p1 -b .log
 
 %build
 make %{?_smp_mflags}
@@ -42,14 +43,11 @@ make install INSTPREFIX=$RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/acpi/actions
 chmod 755 $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events
-install -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events/video.conf
-install -m 644 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events/power.conf
-
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
-install -m 644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/acpid
+install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events/video.conf
+install -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events/power.conf
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d
-install -m 755 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/acpid
+install -m 755 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/acpid
 
 
 %clean
@@ -64,7 +62,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/acpi/actions
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/acpi/events/video.conf
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/acpi/events/power.conf
-%config(noreplace) %{_sysconfdir}/logrotate.d/acpid
 %{_bindir}/acpi_listen
 %{_sbindir}/acpid
 %attr(0755,root,root) %{_sysconfdir}/rc.d/init.d/acpid
@@ -87,6 +84,11 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Fri Nov 23 2007 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.6-4.fc8
+- Removed old logrotate file
+- Fixed socket leak (#394431)
+- Fixed dumping useless info to log (#389581)
+
 * Thu Oct 23 2007 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.6-3.fc8
 - Silent initscript
 - Resolves: #345611
