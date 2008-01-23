@@ -1,13 +1,14 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 1.0.6
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: GPL
 Group: System Environment/Daemons
 Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
 Source1: acpid.init
 Source2: acpid.video.conf
 Source3: acpid.power.conf
+Source4: acpid.power.sh
 Patch1: acpid-1.0.6-makefile.patch
 Patch2: acpid-1.0.6-return.patch
 Patch3: acpid-1.0.6-fd.patch
@@ -45,6 +46,7 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/acpi/actions
 chmod 755 $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events
 install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events/video.conf
 install -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events/power.conf
+install -m 755 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/actions/power.sh
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d
 install -m 755 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/acpid
@@ -62,6 +64,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/acpi/actions
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/acpi/events/video.conf
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/acpi/events/power.conf
+%config(noreplace) %attr(0755,root,root) %{_sysconfdir}/acpi/actions/power.sh
 %{_bindir}/acpi_listen
 %{_sbindir}/acpid
 %attr(0755,root,root) %{_sysconfdir}/rc.d/init.d/acpid
@@ -84,6 +87,10 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Wed Jan 23 2008 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.6-5.fc9
+- Fixed managing of power button (#361501)
+- Fixed power script to check for KDE power manager (#419331)
+
 * Fri Nov 23 2007 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.6-4.fc9
 - Removed old logrotate file
 - Fixed socket leak (#394431)
