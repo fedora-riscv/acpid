@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 1.0.4
-Release: 8%{?dist}
+Release: 9%{?dist}
 License: GPL
 Group: System Environment/Daemons
 Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
@@ -9,6 +9,7 @@ Source1: acpid.logrotate
 Source2: acpid.init
 Source3: acpid.video.conf
 Source4: acpid.power.conf
+Source5: acpid.power.sh
 Patch1: acpid-1.0.3-makefile.patch
 Patch2: acpid-1.0.4-warning.patch
 Patch3: acpid-1.0.4-pie.patch
@@ -46,6 +47,7 @@ mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/acpi/actions
 chmod 755 $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events
 install -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events/video.conf
 install -m 644 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events/power.conf
+install -m 755 %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/actions/power.sh
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d
 install -m 644 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/acpid
@@ -66,6 +68,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/acpi/actions
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/acpi/events/video.conf
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/acpi/events/power.conf
+%config(noreplace) %attr(0755,root,root) %{_sysconfdir}/acpi/actions/power.sh
 %config(noreplace) %{_sysconfdir}/logrotate.d/acpid
 %{_bindir}/acpi_listen
 %{_sbindir}/acpid
@@ -89,6 +92,10 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Wed Jan 23 2008 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.4-9.fc7
+- Fixed managing of power button (#361501)
+- Fixed power script to check for KDE power manager (#419331)
+
 * Wed Sep 26 2007 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.4-8.fc7
 - Fixed leak of a file descriptor (#304761)
 
