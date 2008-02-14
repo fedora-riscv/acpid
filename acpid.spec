@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 1.0.6
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: GPL
 Group: System Environment/Daemons
 Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
@@ -87,6 +87,9 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Thu Feb 14 2008 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.6-6.fc9
+- Update of acpid-1.0.6-makefile.patch, it fix building with gcc 4.3
+
 * Wed Jan 23 2008 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.6-5.fc9
 - Fixed managing of power button (#361501)
 - Fixed power script to check for KDE power manager (#419331)
