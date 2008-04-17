@@ -4,7 +4,7 @@
 #
 # Starts the acpi daemon
 #
-# chkconfig: 345 44 56
+# chkconfig: 345 26 74
 # description: Listen and dispatch ACPI events from the kernel
 # processname: acpid
 

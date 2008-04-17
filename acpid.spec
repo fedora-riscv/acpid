@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 1.0.6
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: GPL
 Group: System Environment/Daemons
 Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
@@ -87,6 +87,9 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Thu Apr 17 2008 Bill Nottingham <notting@redhat.com> - 1.0.6-7.fc9
+- adjust start/stop priority to not conflict with HAL (#442759)
+
 * Thu Feb 14 2008 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.6-6.fc9
 - Update of acpid-1.0.6-makefile.patch, it fix building with gcc 4.3
 
