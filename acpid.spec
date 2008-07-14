@@ -1,8 +1,8 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 1.0.6
-Release: 7%{?dist}
-License: GPL
+Release: 8%{?dist}
+License: GPLv2+
 Group: System Environment/Daemons
 Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
 Source1: acpid.init
@@ -87,6 +87,9 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Mon Jul 14 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 1.0.6-8
+- fix license tag
+
 * Thu Apr 17 2008 Bill Nottingham <notting@redhat.com> - 1.0.6-7.fc9
 - adjust start/stop priority to not conflict with HAL (#442759)
 
