@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 1.0.6
-Release: 8%{?dist}
+Version: 1.0.8
+Release: 1%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
@@ -9,10 +9,7 @@ Source1: acpid.init
 Source2: acpid.video.conf
 Source3: acpid.power.conf
 Source4: acpid.power.sh
-Patch1: acpid-1.0.6-makefile.patch
-Patch2: acpid-1.0.6-return.patch
-Patch3: acpid-1.0.6-fd.patch
-Patch4: acpid-1.0.6-log.patch
+Patch1: acpid-1.0.8-makefile.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: ia64 x86_64 %{ix86}
 URL: http://acpid.sourceforge.net/
@@ -28,9 +25,6 @@ acpid is a daemon that dispatches ACPI events to user-space programs.
 %prep
 %setup -q
 %patch1 -p1 -b .makefile
-%patch2 -p1 -b .return
-%patch3 -p1 -b .fd
-%patch4 -p1 -b .log
 
 %build
 make %{?_smp_mflags}
@@ -87,6 +81,12 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Tue Nov 11 2008 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.8-1
+- Updated to version 1.0.8
+- power.sh works with ConsoleKit >= 0.3.0 (#470752)
+- Fixed conditions in power.sh, which look for power-managers (#470752)
+- Added check to init script
+
 * Mon Jul 14 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 1.0.6-8
 - fix license tag
 

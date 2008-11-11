@@ -27,12 +27,17 @@ RETVAL=0
 # See how we were called.
 #
 
-start() {
+check() {
 	# Check that we're a privileged user
 	[ `id -u` = 0 ] || exit 4
 	
 	# Check if acpid is executable
 	test -x /usr/sbin/acpid || exit 5
+}
+
+start() {
+
+	check
 	
 	# Check for kernel support
 	[ -f /proc/acpi/event ] || exit 1
@@ -49,6 +54,9 @@ start() {
 }
 
 stop() {
+
+	check
+	
 	echo -n $"Stopping acpi daemon: "
 	killproc /usr/sbin/acpid
 	RETVAL=$?
@@ -64,6 +72,9 @@ restart() {
 }	
 
 reload() {
+
+	check
+	
 	trap "" SIGHUP
 	action $"Reloading acpi daemon:" killall -HUP acpid
 	RETVAL=$?
