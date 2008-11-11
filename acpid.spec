@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 1.0.6
-Release: 8%{?dist}
+Release: 9%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
@@ -87,6 +87,11 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Tue Nov 11 2008 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.6-9
+- power.sh works with ConsoleKit >= 0.3.0 (#470752)
+- Fixed conditions in power.sh, which look for power-managers (#470752)
+- Added check to init script
+
 * Mon Jul 14 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 1.0.6-8
 - fix license tag
 
