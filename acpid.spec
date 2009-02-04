@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 1.0.8
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
@@ -81,6 +81,9 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Wed Feb 04 2009 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.8-2
+- power.sh works with KDE 4.* (#483417)
+
 * Tue Nov 11 2008 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.8-1
 - Updated to version 1.0.8
 - power.sh works with ConsoleKit >= 0.3.0 (#470752)
