@@ -21,7 +21,8 @@ active == "TRUE" && x11 != "" {
 ps axo uid,cmd | \
 awk '
     $1 == '$uid_session' &&
-	($2 ~ /gnome-power-manager/ || $2 ~ /kpowersave/) \
+	($2 ~ /gnome-power-manager/ || $2 ~ /kpowersave/ ||
+	 $2 ~ /kded4/ || $3 ~ /guidance-power-manager/) \
 		{ found = 1; exit }
     END { exit !found }
 ' ||
