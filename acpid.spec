@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 1.0.8
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
@@ -10,6 +10,7 @@ Source2: acpid.video.conf
 Source3: acpid.power.conf
 Source4: acpid.power.sh
 Patch1: acpid-1.0.8-makefile.patch
+Patch2: acpid-1.0.8-socket.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: ia64 x86_64 %{ix86}
 URL: http://acpid.sourceforge.net/
@@ -25,6 +26,7 @@ acpid is a daemon that dispatches ACPI events to user-space programs.
 %prep
 %setup -q
 %patch1 -p1 -b .makefile
+%patch2 -p0 -b .socket
 
 %build
 make %{?_smp_mflags}
@@ -81,6 +83,9 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Tue Apr 21 2009 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.8-4
+- Fixed CVE-2009-0798 (too many open files DoS)
+
 * Mon Feb 23 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.8-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
 
