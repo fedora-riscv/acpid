@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 1.0.8
-Release: 3%{?dist}
+Version: 1.0.10
+Release: 1%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
@@ -81,6 +81,9 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Thu Apr 23 2009 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.10-1
+- Updated to version 1.0.10
+
 * Mon Feb 23 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.8-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
 
