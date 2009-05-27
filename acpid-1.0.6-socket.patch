@@ -1,0 +1,392 @@
+diff -up acpid-1.0.6/acpid.8.socket acpid-1.0.6/acpid.8
+--- acpid-1.0.6/acpid.8.socket	2007-05-25 06:35:31.000000000 +0200
++++ acpid-1.0.6/acpid.8	2009-05-27 08:06:52.000000000 +0200
+@@ -57,6 +57,10 @@ All the default file and directories can
+ This option changes the directory in which \fBacpid\fP looks for rule 
+ configuration files.  Default is \fI/etc/acpi/events\fP.
+ .TP 12
++.BI \-C "\fR, \fP" \--clientmax " number"
++This option changes the maximum number of non-root socket connections which
++can be made to the \fBacpid\fP socket.  Default is \fI256\fP.
++.TP 12
+ .BI \-d "\fR, \fP" \--debug
+ This option increases the \fBacpid\fP debug level by one.  If the debug level
+ is non-zero, \fBacpid\fP will run in the foreground, and will log to
+diff -up acpid-1.0.6/acpid.c.socket acpid-1.0.6/acpid.c
+--- acpid-1.0.6/acpid.c.socket	2009-05-27 08:06:43.000000000 +0200
++++ acpid-1.0.6/acpid.c	2009-05-27 08:14:32.000000000 +0200
+@@ -43,12 +43,16 @@ static void close_fds(void);
+ static int daemonize(void);
+ static int open_log(void);
+ static void clean_exit(int sig);
++static void clean_exit_with_status(int status);
+ static void reload_conf(int sig);
+ static char *read_line(int fd);
+ 
+ /* global debug level */
+ int acpid_debug;
+ 
++/* the number of non-root clients that are connected */
++int non_root_clients;
++
+ static const char *progname;
+ static const char *confdir = ACPI_CONFDIR;
+ static const char *eventfile = ACPI_EVENTFILE;
+@@ -57,6 +61,7 @@ static int nosocket;
+ static const char *socketgroup;
+ static mode_t socketmode = ACPI_SOCKETMODE;
+ static int foreground;
++static int clientmax = ACPID_CLIENTMAX;
+ 
+ int
+ main(int argc, char **argv)
+@@ -77,7 +82,7 @@ main(int argc, char **argv)
+ 	/* actually open the event file */
+ 	event_fd = open(eventfile, O_RDONLY);
+ 	if (event_fd < 0) {
+-		fprintf(stderr, "%s: can't open %s: %s\n", progname, 
++		fprintf(stderr, "%s: can't open %s: %s\n", progname,
+ 			eventfile, strerror(errno));
+ 		exit(EXIT_FAILURE);
+ 	}
+@@ -104,11 +109,11 @@ main(int argc, char **argv)
+ 		fl = fcntl(event_fd, F_GETFL);
+ 		fcntl(event_fd, F_SETFL, fl | O_NONBLOCK);
+ 		if (read(event_fd, &buf, 1) == 0) {
+-			fprintf(stderr, 
++			fprintf(stderr,
+ 				"%s: this kernel does not support proper "
+ 				"event file handling.\n"
+ 				"Please get the patch from "
+-				"http://acpid.sourceforge.net\n", 
++				"http://acpid.sourceforge.net\n",
+ 				progname);
+ 			exit(EXIT_FAILURE);
+ 		}
+@@ -175,7 +180,7 @@ main(int argc, char **argv)
+ 		struct pollfd ar[2];
+ 		int r;
+ 		int fds = 0;
+-		
++
+ 		/* poll for the socket and the event file */
+ 		ar[0].fd = event_fd; ar[0].events = POLLIN; fds++;
+ 		if (!nosocket) {
+@@ -190,10 +195,13 @@ main(int argc, char **argv)
+ 			continue;
+ 		}
+ 
++		/* house keeping */
++		acpid_close_dead_clients();
++
+ 		/* was it an event? */
+ 		if (ar[0].revents) {
+ 			char *event;
+-			
++
+ 			/* this shouldn't happen */
+ 			if (!ar[0].revents & POLLIN) {
+ 				acpid_log(LOG_DEBUG,
+@@ -227,13 +235,14 @@ main(int argc, char **argv)
+ 					break;
+ 				}
+ 			}
+-		} 
++		}
+ 
+ 		/* was it a new connection? */
+ 		if (!nosocket && ar[1].revents) {
+ 			int cli_fd;
+ 			struct ucred creds;
+ 			char buf[32];
++			static int accept_errors;
+ 
+ 			/* this shouldn't happen */
+ 			if (!ar[1].revents & POLLIN) {
+@@ -248,8 +257,23 @@ main(int argc, char **argv)
+ 			if (cli_fd < 0) {
+ 				acpid_log(LOG_ERR, "can't accept client: %s\n",
+ 				    strerror(errno));
++				accept_errors++;
++				if (accept_errors >= 5) {
++					acpid_log(LOG_ERR, "giving up\n");
++					clean_exit_with_status(EXIT_FAILURE);
++				}
++				continue;
++			}
++			accept_errors = 0;
++			if (creds.uid != 0 && non_root_clients >= clientmax) {
++				close(cli_fd);
++				acpid_log(LOG_ERR,
++				    "too many non-root clients\n");
+ 				continue;
+ 			}
++			if (creds.uid != 0) {
++				non_root_clients++;
++			}
+ 			fcntl(cli_fd, F_SETFD, FD_CLOEXEC);
+ 			snprintf(buf, sizeof(buf)-1, "%d[%d:%d]",
+ 				creds.pid, creds.uid, creds.gid);
+@@ -257,7 +281,7 @@ main(int argc, char **argv)
+ 		}
+ 	}
+ 
+-	clean_exit(EXIT_SUCCESS);
++	clean_exit_with_status(EXIT_SUCCESS);
+ 
+ 	return 0;
+ }
+@@ -270,6 +294,7 @@ handle_cmdline(int *argc, char ***argv)
+ {
+ 	struct option opts[] = {
+ 		{"confdir", 1, 0, 'c'},
++		{"clientmax", 1, 0, 'C'},
+ 		{"debug", 0, 0, 'd'},
+ 		{"eventfile", 1, 0, 'e'},
+ 		{"foreground", 0, 0, 'f'},
+@@ -283,6 +308,7 @@ handle_cmdline(int *argc, char ***argv)
+ 	};
+ 	const char *opts_help[] = {
+ 		"Set the configuration directory.",	/* confdir */
++		"Set the limit on non-root socket connections.",/* clientmax */
+ 		"Increase debugging level (implies -f).",/* debug */
+ 		"Use the specified file for events.",	/* eventfile */
+ 		"Run in the foreground.",		/* foreground */
+@@ -299,7 +325,7 @@ handle_cmdline(int *argc, char ***argv)
+ 
+ 	for (;;) {
+ 		int i;
+-		i = getopt_long(*argc, *argv, "c:de:fg:m:s:Svh", opts, NULL);
++		i = getopt_long(*argc, *argv, "c:C:de:fg:m:s:Svh", opts, NULL);
+ 		if (i == -1) {
+ 			break;
+ 		}
+@@ -307,6 +333,9 @@ handle_cmdline(int *argc, char ***argv)
+ 		case 'c':
+ 			confdir = optarg;
+ 			break;
++		case 'C':
++			clientmax = strtol(optarg, NULL, 0);
++			break;
+ 		case 'd':
+ 			foreground = 1;
+ 			acpid_debug++;
+@@ -404,7 +433,7 @@ open_log(void)
+ 	/* open /dev/null */
+ 	nullfd = open("/dev/null", O_RDONLY);
+ 	if (nullfd < 0) {
+-		fprintf(stderr, "%s: can't open %s: %s\n", progname, 
++		fprintf(stderr, "%s: can't open %s: %s\n", progname,
+ 			"/dev/null", strerror(errno));
+ 		return -1;
+ 	}
+@@ -435,11 +464,17 @@ open_log(void)
+ }
+ 
+ static void
+-clean_exit(int sig)
++clean_exit_with_status(int status)
+ {
+ 	acpid_cleanup_rules(1);
+ 	acpid_log(LOG_NOTICE, "exiting\n");
+-	exit(EXIT_SUCCESS);
++	exit(status);
++}
++
++static void
++clean_exit(int sig __attribute__((unused)))
++{
++	clean_exit_with_status(EXIT_SUCCESS);
+ }
+ 
+ static void
+@@ -450,7 +485,7 @@ reload_conf(int sig)
+ 	acpid_read_conf(confdir);
+ }
+ 
+-int 
++int
+ acpid_log(int level, const char *fmt, ...)
+ {
+ 	va_list args;
+@@ -462,7 +497,7 @@ acpid_log(int level, const char *fmt, ..
+ 	return 0;
+ }
+ 
+-/* 
++/*
+  * This depends on fixes in linux ACPI after 2.4.8
+  */
+ #define MAX_BUFLEN	1024
+@@ -507,7 +542,7 @@ read_line(int fd)
+ 		}
+ 		if (buflen >= MAX_BUFLEN) {
+ 			break;
+-		} 
++		}
+ 		buflen *= 2;
+ 	}
+ 
+diff -up acpid-1.0.6/acpid.h.socket acpid-1.0.6/acpid.h
+--- acpid-1.0.6/acpid.h.socket	2007-05-24 08:33:33.000000000 +0200
++++ acpid-1.0.6/acpid.h	2009-05-27 08:11:07.000000000 +0200
+@@ -34,6 +34,7 @@
+ #define ACPI_CONFDIR		"/etc/acpi/events"
+ #define ACPI_SOCKETFILE		"/var/run/acpid.socket"
+ #define ACPI_SOCKETMODE		0666
++#define ACPID_CLIENTMAX		256
+ #define ACPI_MAX_ERRS		5
+ 
+ #define PACKAGE 		"acpid"
+@@ -42,6 +43,7 @@
+  * acpid.c
+  */
+ extern int acpid_debug;
++extern int non_root_clients;
+ extern int acpid_log(int level, const char *fmt, ...);
+ 
+ /*
+@@ -51,5 +53,6 @@ extern int acpid_read_conf(const char *c
+ extern int acpid_add_client(int client, const char *origin);
+ extern int acpid_cleanup_rules(int do_detach);
+ extern int acpid_handle_event(const char *event);
++extern void acpid_close_dead_clients(void);
+ 
+ #endif /* ACPID_H__ */
+diff -up acpid-1.0.6/event.c.socket acpid-1.0.6/event.c
+--- acpid-1.0.6/event.c.socket	2009-05-27 08:06:43.000000000 +0200
++++ acpid-1.0.6/event.c	2009-05-27 08:10:07.000000000 +0200
+@@ -23,6 +23,7 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/wait.h>
++#include <sys/poll.h>
+ #include <fcntl.h>
+ #include <unistd.h>
+ #include <stdio.h>
+@@ -35,6 +36,7 @@
+ #include <signal.h>
+ 
+ #include "acpid.h"
++#include "ud_socket.h"
+ 
+ /*
+  * What is a rule?  It's polymorphic, pretty much.
+@@ -347,7 +349,7 @@ acpid_add_client(int clifd, const char *
+ 		acpid_log(LOG_INFO, "%d client rule%s loaded\n",
+ 	    	nrules, (nrules == 1)?"":"s");
+ 	}
+-	
++
+ 	return 0;
+ }
+ 
+@@ -458,6 +460,55 @@ free_rule(struct rule *r)
+ 	free(r);
+ }
+ 
++static int
++client_is_dead(int fd)
++{
++	struct pollfd pfd;
++	int r;
++
++	/* check the fd to see if it is dead */
++	pfd.fd = fd;
++	pfd.events = POLLERR | POLLHUP;
++	r = poll(&pfd, 1, 0);
++
++	if (r < 0) {
++		acpid_log(LOG_ERR, "poll(): %s\n", strerror(errno));
++		return 0;
++	}
++
++	return pfd.revents;
++}
++
++void
++acpid_close_dead_clients(void)
++{
++	struct rule *p;
++
++	lock_rules();
++
++	/* scan our client list */
++	p = client_list.head;
++	while (p) {
++		struct rule *next = p->next;
++		if (client_is_dead(p->action.fd)) {
++			struct ucred cred;
++			/* closed */
++			acpid_log(LOG_NOTICE,
++			    "client %s has disconnected\n", p->origin);
++			delist_rule(&client_list, p);
++			ud_get_peercred(p->action.fd, &cred);
++			if (cred.uid != 0) {
++				non_root_clients--;
++			}
++			close(p->action.fd);
++			free_rule(p);
++		}
++		p = next;
++	}
++
++	unlock_rules();
++}
++
+ /*
+  * the main hook for propogating events
+  */
+@@ -624,9 +675,14 @@ do_client_rule(struct rule *rule, const 
+ 
+ 	r = safe_write(client, event, strlen(event));
+ 	if (r < 0 && errno == EPIPE) {
++		struct ucred cred;
+ 		/* closed */
+ 		acpid_log(LOG_NOTICE, "client has disconnected\n");
+ 		delist_rule(&client_list, rule);
++		ud_get_peercred(rule->action.fd, &cred);
++		if (cred.uid != 0) {
++			non_root_clients--;
++		}
+ 		close(rule->action.fd);
+ 		free_rule(rule);
+ 		return -1;
+diff -up acpid-1.0.6/ud_socket.c.socket acpid-1.0.6/ud_socket.c
+--- acpid-1.0.6/ud_socket.c.socket	2007-01-17 08:57:51.000000000 +0100
++++ acpid-1.0.6/ud_socket.c	2009-05-27 08:06:52.000000000 +0200
+@@ -1,5 +1,5 @@
+ /*
+- * $Id: acpid-1.0.6-socket.patch,v 1.1 2009/05/27 06:30:08 zprikryl Exp $
++ * $Id: acpid-1.0.6-socket.patch,v 1.1 2009/05/27 06:30:08 zprikryl Exp $
+  * A few  routines for handling UNIX domain sockets
+  */
+ 
+@@ -103,3 +103,10 @@ ud_connect(const char *name)
+ 	return fd;
+ }
+ 
++int
++ud_get_peercred(int fd, struct ucred *cred)
++{
++	socklen_t len = sizeof(struct ucred);
++	getsockopt(fd, SOL_SOCKET, SO_PEERCRED, cred, &len);
++	return 0;
++}
+diff -up acpid-1.0.6/ud_socket.h.socket acpid-1.0.6/ud_socket.h
+--- acpid-1.0.6/ud_socket.h.socket	2007-01-17 08:57:51.000000000 +0100
++++ acpid-1.0.6/ud_socket.h	2009-05-27 08:06:52.000000000 +0200
+@@ -1,5 +1,5 @@
+ /*
+- *$Id: acpid-1.0.6-socket.patch,v 1.1 2009/05/27 06:30:08 zprikryl Exp $
++ *$Id: acpid-1.0.6-socket.patch,v 1.1 2009/05/27 06:30:08 zprikryl Exp $
+  */
+ 
+ #ifndef UD_SOCKET_H__
+@@ -11,5 +11,6 @@
+ int ud_create_socket(const char *name);
+ int ud_accept(int sock, struct ucred *cred);
+ int ud_connect(const char *name);
++int ud_get_peercred(int fd, struct ucred *cred);
+ 
+ #endif
