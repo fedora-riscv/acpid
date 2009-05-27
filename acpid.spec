@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 1.0.6
-Release: 7%{?dist}
+Release: 8%{?dist}
 License: GPL
 Group: System Environment/Daemons
 Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
@@ -13,6 +13,7 @@ Patch1: acpid-1.0.6-makefile.patch
 Patch2: acpid-1.0.6-return.patch
 Patch3: acpid-1.0.6-fd.patch
 Patch4: acpid-1.0.6-log.patch
+Patch5: acpid-1.0.6-socket.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: ia64 x86_64 %{ix86}
 URL: http://acpid.sourceforge.net/
@@ -31,6 +32,7 @@ acpid is a daemon that dispatches ACPI events to user-space programs.
 %patch2 -p1 -b .return
 %patch3 -p1 -b .fd
 %patch4 -p1 -b .log
+%patch5 -p1 -b .socket
 
 %build
 make %{?_smp_mflags}
@@ -87,6 +89,9 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Wed May 27 2009 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.6-8
+- Fixed CVE-2009-0798 (too many open files DoS) (#502583)
+
 * Thu Apr 17 2008 Bill Nottingham <notting@redhat.com> - 1.0.6-7.fc9
 - adjust start/stop priority to not conflict with HAL (#442759)
 
