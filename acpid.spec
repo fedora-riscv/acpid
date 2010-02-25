@@ -9,7 +9,11 @@ Source1: acpid.init
 Source2: acpid.video.conf
 Source3: acpid.power.conf
 Source4: acpid.power.sh
+
 Patch1: acpid-2.0.2-makefile.patch
+Patch2: acpid-2.0.2-no_umask.patch
+Patch3: acpid-2.0.2-headers.patch
+
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: ia64 x86_64 %{ix86}
 URL: http://tedfelix.com/linux/acpid-netlink.html
@@ -26,6 +30,8 @@ acpid is a daemon that dispatches ACPI events to user-space programs.
 %setup -q
 
 %patch1 -p1 -b .makefile
+%patch2 -p1 -b .no_umask
+%patch3 -p1 -b .headers
 
 %build
 make %{?_smp_mflags}
@@ -84,6 +90,8 @@ fi
 %changelog
 * Thu Feb 25 2010 Jiri Skala <jskala@redhat.com> - 2.0.2-1
 - latest upstream version
+- removed spare umask
+- fixes missing headers
 
 * Fri Jul 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.10-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
