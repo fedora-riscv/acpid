@@ -1,18 +1,18 @@
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 1.0.10
-Release: 2%{?dist}
+Version: 2.0.2
+Release: 1%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
-Source: http://prdownloads.sourceforge.net/acpid/acpid-%{version}.tar.gz
+Source: http://tedfelix.com/linux/acpid-%{version}.tar.gz
 Source1: acpid.init
 Source2: acpid.video.conf
 Source3: acpid.power.conf
 Source4: acpid.power.sh
-Patch1: acpid-1.0.8-makefile.patch
+Patch1: acpid-2.0.2-makefile.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: ia64 x86_64 %{ix86}
-URL: http://acpid.sourceforge.net/
+URL: http://tedfelix.com/linux/acpid-netlink.html
 Requires(post): /sbin/chkconfig
 Requires(preun): /sbin/chkconfig
 Requires(preun): /sbin/service
@@ -24,6 +24,7 @@ acpid is a daemon that dispatches ACPI events to user-space programs.
 
 %prep
 %setup -q
+
 %patch1 -p1 -b .makefile
 
 %build
@@ -33,7 +34,7 @@ make %{?_smp_mflags}
 %install
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT
-make install INSTPREFIX=$RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/acpi/actions
@@ -52,7 +53,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
-%doc COPYING README Changelog TODO
+%doc COPYING README Changelog TODO TESTPLAN
 %dir %{_sysconfdir}/acpi
 %dir %{_sysconfdir}/acpi/events
 %dir %{_sysconfdir}/acpi/actions
@@ -81,6 +82,9 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Thu Feb 25 2010 Jiri Skala <jskala@redhat.com> - 2.0.2-1
+- latest upstream version
+
 * Fri Jul 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.10-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
 
