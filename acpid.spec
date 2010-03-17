@@ -1,6 +1,6 @@
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 2.0.2
+Version: 2.0.3
 Release: 1%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
@@ -11,8 +11,6 @@ Source3: acpid.power.conf
 Source4: acpid.power.sh
 
 Patch1: acpid-2.0.2-makefile.patch
-Patch2: acpid-2.0.2-no_umask.patch
-Patch3: acpid-2.0.2-headers.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: ia64 x86_64 %{ix86}
@@ -30,8 +28,6 @@ acpid is a daemon that dispatches ACPI events to user-space programs.
 %setup -q
 
 %patch1 -p1 -b .makefile
-%patch2 -p1 -b .no_umask
-%patch3 -p1 -b .headers
 
 %build
 make %{?_smp_mflags}
@@ -88,6 +84,9 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Wed Mar 17  2010 Jiri Skala <jskala@redhat.com> - 2.0.3-1
+- latest upstream version
+
 * Thu Feb 25 2010 Jiri Skala <jskala@redhat.com> - 2.0.2-1
 - latest upstream version
 - removed spare umask

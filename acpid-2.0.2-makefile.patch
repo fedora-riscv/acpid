@@ -28,12 +28,3 @@ diff -up acpid-2.0.2/Makefile.makefile acpid-2.0.2/Makefile
  
  install: $(PROGS) man install_docs
  	mkdir -p $(DESTDIR)/$(SBINDIR)
-@@ -57,7 +58,7 @@ install: $(PROGS) man install_docs
- 	mkdir -p $(DESTDIR)/$(MANDIR)/man8
- 	install -m 0644 $(MAN8GZ) $(DESTDIR)/$(MANDIR)/man8
- 	# If DESTDIR is empty and mandb exists, run it
--	[ -z "$(DESTDIR)" ] && which mandb 1>/dev/null 2>&1 && mandb -q
-+	if test -z "$(DESTDIR)"; then which mandb 1>/dev/null 2>&1 && mandb -q; fi
- 
- DISTTMP=/tmp
- DISTNAME=acpid-$(VERSION)
