@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.3
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://tedfelix.com/linux/acpid-%{version}.tar.gz
@@ -41,8 +41,8 @@ make install DESTDIR=$RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/acpi/actions
 chmod 755 $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events
-install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events/video.conf
-install -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events/power.conf
+install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events/videoconf
+install -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events/powerconf
 install -m 755 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/actions/power.sh
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d
@@ -59,8 +59,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/acpi
 %dir %{_sysconfdir}/acpi/events
 %dir %{_sysconfdir}/acpi/actions
-%config(noreplace) %attr(0644,root,root) %{_sysconfdir}/acpi/events/video.conf
-%config(noreplace) %attr(0644,root,root) %{_sysconfdir}/acpi/events/power.conf
+%config(noreplace) %attr(0644,root,root) %{_sysconfdir}/acpi/events/videoconf
+%config(noreplace) %attr(0644,root,root) %{_sysconfdir}/acpi/events/powerconf
 %config(noreplace) %attr(0755,root,root) %{_sysconfdir}/acpi/actions/power.sh
 %{_bindir}/acpi_listen
 %{_sbindir}/acpid
@@ -68,6 +68,18 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/acpid.8.gz
 %{_mandir}/man8/acpi_listen.8.gz
 
+
+%pre
+if [ "$1" = "2" ]; then
+	conflist=`ls %{_sysconfdir}/acpi/events/*.conf 2> /dev/null`
+	RETCODE=$?
+	if [ $RETCODE -eq 0 ]; then
+		for i in $conflist; do
+			rmdot=`echo $i | sed 's/.conf/conf/'`
+	 		mv $i $rmdot
+		done
+	fi
+fi
 
 %post
 /sbin/chkconfig --add acpid
@@ -84,8 +96,8 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
-* Wed Mar 17  2010 Jiri Skala <jskala@redhat.com> - 2.0.3-1
-- latest upstream version
+* Wed Mar 17  2010 Jiri Skala <jskala@redhat.com> - 2.0.3-2
+- fixes #575320 - acpid fails to load any event config files
 
 * Thu Feb 25 2010 Jiri Skala <jskala@redhat.com> - 2.0.2-1
 - latest upstream version
