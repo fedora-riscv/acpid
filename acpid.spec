@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 2.0.3
-Release: 2%{?dist}
+Version: 2.0.4
+Release: 1%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://tedfelix.com/linux/acpid-%{version}.tar.gz
@@ -96,6 +96,9 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Wed May 05 2010 Jiri Skala <jskala@redhat.com> - 2.0.4-1
+- latest upstream version
+
 * Wed Mar 17  2010 Jiri Skala <jskala@redhat.com> - 2.0.3-2
 - fixes #575320 - acpid fails to load any event config files
 
