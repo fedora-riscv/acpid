@@ -39,9 +39,6 @@ start() {
 
 	check
 	
-	# Check for kernel support
-	[ -f /proc/acpi/event ] || exit 1
-
 	# Check if it is already running
 	if [ ! -f /var/lock/subsys/acpid ]; then
 		echo -n $"Starting acpi daemon: "	

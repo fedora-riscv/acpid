@@ -1,6 +1,6 @@
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 2.0.4
+Version: 2.0.5
 Release: 1%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
@@ -96,6 +96,10 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Tue Jul 13 2010 Jiri Skala <jskala@redhat.com> - 2.0.5-1
+- latest upstream version
+- fixes #613315 kernel-2.6.35 doesn't create /proc/acpi/event
+
 * Wed May 05 2010 Jiri Skala <jskala@redhat.com> - 2.0.4-1
 - latest upstream version
 
