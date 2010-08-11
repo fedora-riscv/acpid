@@ -97,8 +97,8 @@ if [ "$1" = "0" ]; then
 	/sbin/service acpid stop >/dev/null 2>&1
 	/sbin/chkconfig --del acpid
 
-	/bin/systemctl disable %{name}.service foobar.socket > /dev/null 2>&1 || :
-        /bin/systemctl stop %{name}.service foobar.socket > /dev/null 2>&1 || :
+	/bin/systemctl disable %{name}.service %{name}.socket > /dev/null 2>&1 || :
+        /bin/systemctl stop %{name}.service %{name}.socket > /dev/null 2>&1 || :
 fi
 
 %postun
