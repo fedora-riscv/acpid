@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.5
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://tedfelix.com/linux/acpid-%{version}.tar.gz
@@ -9,6 +9,7 @@ Source1: acpid.init
 Source2: acpid.video.conf
 Source3: acpid.power.conf
 Source4: acpid.power.sh
+Source5: acpid.service
 
 Patch1: acpid-2.0.2-makefile.patch
 
@@ -18,6 +19,7 @@ URL: http://tedfelix.com/linux/acpid-netlink.html
 Requires(post): /sbin/chkconfig
 Requires(preun): /sbin/chkconfig
 Requires(preun): /sbin/service
+Requires: systemd-units
 
 
 %description
@@ -40,10 +42,12 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/acpi/actions
+mkdir -p $RPM_BUILD_ROOT/lib/systemd/system
 chmod 755 $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events
 install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events/videoconf
 install -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events/powerconf
 install -m 755 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/actions/power.sh
+install -m 644 %{SOURCE5} $RPM_BUILD_ROOT/lib/systemd/system
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d
 install -m 755 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/acpid
@@ -56,6 +60,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root)
 %doc COPYING README Changelog TODO TESTPLAN
+/lib/systemd/system/%{name}.service
 %dir %{_sysconfdir}/acpi
 %dir %{_sysconfdir}/acpi/events
 %dir %{_sysconfdir}/acpi/actions
@@ -82,20 +87,33 @@ if [ "$1" = "2" ]; then
 fi
 
 %post
-/sbin/chkconfig --add acpid
+if [ $1 -eq 1 ]; then
+	/sbin/chkconfig --add acpid
+	/bin/systemctl enable %{name}.service > /dev/null 2>&1 || :
+fi
 
 %preun
 if [ "$1" = "0" ]; then
 	/sbin/service acpid stop >/dev/null 2>&1
 	/sbin/chkconfig --del acpid
+
+	/bin/systemctl disable %{name}.service %{name}.socket > /dev/null 2>&1 || :
+	/bin/systemctl stop %{name}.service %{name}.socket > /dev/null 2>&1 || :
+
 fi
 
 %postun
 if [ "$1" -ge "1" ]; then
 	/sbin/service acpid condrestart >/dev/null 2>&1
+
+	/bin/systemctl daemon-reload >/dev/null 2>&1 || :
+	/bin/systemctl try-restart %{name}.service > /dev/null 2>&1 || :
 fi
 
 %changelog
+* Wed Aug 11 2010 Jiri Skala <jskala@redhat.com> - 2.0.5-2
+- fixes #617317 - Providing native systemd file for upcoming F14 Feature Systemd
+
 * Tue Jul 13 2010 Jiri Skala <jskala@redhat.com> - 2.0.5-1
 - latest upstream version
 - fixes #613315 kernel-2.6.35 doesn't create /proc/acpi/event
