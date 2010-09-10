@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.5
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://tedfelix.com/linux/acpid-%{version}.tar.gz
@@ -12,6 +12,7 @@ Source4: acpid.power.sh
 Source5: acpid.service
 
 Patch1: acpid-2.0.2-makefile.patch
+Patch2: acpid-2.0.5-forking.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: ia64 x86_64 %{ix86}
@@ -19,7 +20,7 @@ URL: http://tedfelix.com/linux/acpid-netlink.html
 Requires(post): /sbin/chkconfig
 Requires(preun): /sbin/chkconfig
 Requires(preun): /sbin/service
-Requires: systemd-units
+#Requires: systemd-units
 
 
 %description
@@ -30,6 +31,7 @@ acpid is a daemon that dispatches ACPI events to user-space programs.
 %setup -q
 
 %patch1 -p1 -b .makefile
+%patch2 -p1 -b .forking
 
 %build
 make %{?_smp_mflags}
@@ -110,6 +112,9 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Fri Sep 03 2010 Jiri Skala <jskala@redhat.com> - 2.0.5-3
+- fixed #629740 - acpid doesn't fork, but systemd unit file claims otherwise
+
 * Wed Aug 11 2010 Jiri Skala <jskala@redhat.com> - 2.0.5-2
 - fixes #617317 - Providing native systemd file for upcoming F14 Feature Systemd
 
