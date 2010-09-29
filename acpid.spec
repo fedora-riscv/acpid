@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.5
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://tedfelix.com/linux/acpid-%{version}.tar.gz
@@ -113,6 +113,9 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Wed Sep 29 2010 jkeating - 2.0.5-4
+- Rebuilt for gcc bug 634757
+
 * Mon Sep 13 2010 Jiri Skala <jskala@redhat.com> - 2.0.5-3
 - fixes #629740 - acpid doesn't fork, but systemd unit file claims otherwise
 
