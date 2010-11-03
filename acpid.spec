@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.5
-Release: 3%{?dist}.1
+Release: 4%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://tedfelix.com/linux/acpid-%{version}.tar.gz
@@ -13,6 +13,7 @@ Source5: acpid.service
 
 Patch1: acpid-2.0.2-makefile.patch
 Patch2: acpid-2.0.5-forking.patch
+Patch3: acpid-2.0.5-cloexec.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: ia64 x86_64 %{ix86}
@@ -32,6 +33,7 @@ acpid is a daemon that dispatches ACPI events to user-space programs.
 
 %patch1 -p1 -b .makefile
 %patch2 -p1 -b .forking
+%patch3 -p1 -b .cloexec
 
 %build
 make %{?_smp_mflags}
@@ -112,6 +114,9 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Wed Nov 03 2010 Jiri Skala <jskala@redhat.com> - 2.0.5-4
+- fixes #648221 - SELinux is preventing /sbin/iwconfig access to a leaked /dev/input/event0 file descriptor
+
 * Wed Sep 29 2010 jkeating - 2.0.5-3.1
 - Rebuilt for gcc bug 634757
 
