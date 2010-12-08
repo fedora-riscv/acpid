@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 2.0.5
-Release: 5%{?dist}
+Version: 2.0.7
+Release: 1%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://tedfelix.com/linux/acpid-%{version}.tar.gz
@@ -10,10 +10,9 @@ Source2: acpid.video.conf
 Source3: acpid.power.conf
 Source4: acpid.power.sh
 Source5: acpid.service
+Source6: acpid.sysconfig
 
 Patch1: acpid-2.0.2-makefile.patch
-Patch2: acpid-2.0.5-forking.patch
-Patch3: acpid-2.0.5-cloexec.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: ia64 x86_64 %{ix86}
@@ -32,8 +31,6 @@ acpid is a daemon that dispatches ACPI events to user-space programs.
 %setup -q
 
 %patch1 -p1 -b .makefile
-%patch2 -p1 -b .forking
-%patch3 -p1 -b .cloexec
 
 %build
 make %{?_smp_mflags}
@@ -47,11 +44,14 @@ make install DESTDIR=$RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/acpi/actions
 mkdir -p $RPM_BUILD_ROOT/lib/systemd/system
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
+
 chmod 755 $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events
 install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events/videoconf
 install -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events/powerconf
 install -m 755 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/actions/power.sh
 install -m 644 %{SOURCE5} $RPM_BUILD_ROOT/lib/systemd/system
+install -m 644 %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/acpid
 
 mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d
 install -m 755 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/acpid
@@ -71,6 +71,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/acpi/events/videoconf
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/acpi/events/powerconf
 %config(noreplace) %attr(0755,root,root) %{_sysconfdir}/acpi/actions/power.sh
+%config(noreplace) %attr(0644,root,root) %{_sysconfdir}/sysconfig/acpid
 %{_bindir}/acpi_listen
 %{_sbindir}/acpid
 %attr(0755,root,root) %{_sysconfdir}/rc.d/init.d/acpid
@@ -115,6 +116,10 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Wed Dec 08 2010 Jiri Skala <jskala@redhat.com> - 2.0.7-1
+- update to latest upstream
+- fixes #660459 - Should be able to set options with /etc/sysconfig/acpi
+
 * Wed Nov 03 2010 Jiri Skala <jskala@redhat.com> - 2.0.5-5
 - fixes #648221 - SELinux is preventing /sbin/iwconfig access to a leaked /dev/input/event0 file descriptor
 
