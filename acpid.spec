@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.7
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://tedfelix.com/linux/acpid-%{version}.tar.gz
@@ -116,6 +116,9 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Mon Feb 07 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.7-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
 * Wed Dec 08 2010 Jiri Skala <jskala@redhat.com> - 2.0.7-1
 - update to latest upstream
 - fixes #660459 - Should be able to set options with /etc/sysconfig/acpi
