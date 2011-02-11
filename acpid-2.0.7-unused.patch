@@ -1,0 +1,29 @@
+diff -up acpid-2.0.7/libnetlink.c.unused acpid-2.0.7/libnetlink.c
+--- acpid-2.0.7/libnetlink.c.unused	2011-02-09 16:57:55.922298993 +0100
++++ acpid-2.0.7/libnetlink.c	2011-02-09 16:59:02.927298890 +0100
+@@ -441,7 +441,7 @@ int rtnl_from_file(FILE *rtnl, rtnl_filt
+ 	nladdr.nl_groups = 0;
+ 
+ 	while (1) {
+-		int err, len, type;
++		int err, len;
+ 		int l;
+ 
+ 		status = fread(&buf, 1, sizeof(*h), rtnl);
+@@ -456,7 +456,6 @@ int rtnl_from_file(FILE *rtnl, rtnl_filt
+ 			return 0;
+ 
+ 		len = h->nlmsg_len;
+-		type= h->nlmsg_type;
+ 		l = len - sizeof(*h);
+ 
+ 		if (l<0 || (unsigned)len>sizeof(buf)) {
+@@ -518,7 +517,7 @@ int addattr_l(struct nlmsghdr *n, int ma
+ 
+ int addraw_l(struct nlmsghdr *n, int maxlen, const void *data, int len)
+ {
+-	if ((int)NLMSG_ALIGN(n->nlmsg_len) + NLMSG_ALIGN(len) > maxlen) {
++	if ((int)NLMSG_ALIGN(n->nlmsg_len) + (int)NLMSG_ALIGN(len) > maxlen) {
+ 		fprintf(stderr, "addraw_l ERROR: message exceeded bound of %d\n",maxlen);
+ 		return -1;
+ 	}
