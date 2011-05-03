@@ -1,6 +1,6 @@
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 2.0.7
+Version: 2.0.9
 Release: 1%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
@@ -115,6 +115,10 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Tue May 03 2011 Jiri Skala <jskala@redhat.com> - 2.0.9-1
+- fixes #701340 - CVE-2011-1159 acpid: blocked writes can lead to acpid daemon hang
+- update to latest upstream 2.0.9
+
 * Wed Dec 08 2010 Jiri Skala <jskala@redhat.com> - 2.0.7-1
 - fixes #660459 - Should be able to set options with /etc/sysconfig/acpid
 - update to latest upstream
