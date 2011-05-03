@@ -1,6 +1,6 @@
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 2.0.7
+Version: 2.0.9
 Release: 3%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
@@ -13,7 +13,6 @@ Source5: acpid.service
 Source6: acpid.sysconfig
 
 Patch1: acpid-2.0.2-makefile.patch
-Patch2: acpid-2.0.7-unused.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: ia64 x86_64 %{ix86}
@@ -32,7 +31,6 @@ acpid is a daemon that dispatches ACPI events to user-space programs.
 %setup -q
 
 %patch1 -p1 -b .makefile
-%patch2 -p1 -b .unused
 
 %build
 make %{?_smp_mflags}
@@ -118,6 +116,10 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %changelog
+* Tue May 03 2011 Jiri Skala <jskala@redhat.com> - 2.0.9-1
+- fixes #701340 - CVE-2011-1159 acpid: blocked writes can lead to acpid daemon hang
+- update to latest upstream 2.0.9
+
 * Wed Feb 09 2011 Jiri Skala <jskala@redhat.com> - 2.0.7-3
 - fixes unused varable and coparison of different var types
 
