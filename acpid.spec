@@ -102,8 +102,8 @@ if [ "$1" = "0" ]; then
 	/sbin/service acpid stop >/dev/null 2>&1
 	/sbin/chkconfig --del acpid
 
-	/bin/systemctl disable %{name}.service %{name}.socket > /dev/null 2>&1 || :
-	/bin/systemctl stop %{name}.service %{name}.socket > /dev/null 2>&1 || :
+	/bin/systemctl disable %{name}.service > /dev/null 2>&1 || :
+	/bin/systemctl stop %{name}.service > /dev/null 2>&1 || :
 
 fi
 
@@ -113,6 +113,11 @@ if [ "$1" -ge "1" ]; then
 
 	/bin/systemctl daemon-reload >/dev/null 2>&1 || :
 	/bin/systemctl try-restart %{name}.service > /dev/null 2>&1 || :
+fi
+
+%triggerun -- acpid < 2.0.9
+if /sbin/chkconfig --level 3 acpid ; then
+	/bin/systemctl enable acpid.service >/dev/null 2>&1 || :
 fi
 
 %changelog
