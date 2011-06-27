@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.10
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://tedfelix.com/linux/acpid-%{version}.tar.gz
@@ -19,13 +19,20 @@ ExclusiveArch: ia64 x86_64 %{ix86}
 URL: http://tedfelix.com/linux/acpid-netlink.html
 Requires(post): /sbin/chkconfig
 Requires(preun): /sbin/chkconfig
-Requires(preun): /sbin/service
 Requires: systemd-units
 
 
 %description
 acpid is a daemon that dispatches ACPI events to user-space programs.
 
+%package sysvinit
+Summary: ACPI Event Daemon
+Group: System Environment/Daemons
+Requires: %{name} = %{version}-%{release}
+Requires(preun): /sbin/service
+
+%description sysvinit
+The acpid-sysvinit contains SysV initscript.
 
 %prep
 %setup -q
@@ -74,10 +81,11 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/sysconfig/acpid
 %{_bindir}/acpi_listen
 %{_sbindir}/acpid
-%attr(0755,root,root) %{_sysconfdir}/rc.d/init.d/acpid
 %{_mandir}/man8/acpid.8.gz
 %{_mandir}/man8/acpi_listen.8.gz
 
+%files sysvinit
+%attr(0755,root,root) %{_sysconfdir}/rc.d/init.d/acpid
 
 %pre
 if [ "$1" = "2" ]; then
@@ -93,15 +101,11 @@ fi
 
 %post
 if [ $1 -eq 1 ]; then
-	/sbin/chkconfig --add acpid
 	/bin/systemctl enable %{name}.service > /dev/null 2>&1 || :
 fi
 
 %preun
 if [ "$1" = "0" ]; then
-	/sbin/service acpid stop >/dev/null 2>&1
-	/sbin/chkconfig --del acpid
-
 	/bin/systemctl disable %{name}.service > /dev/null 2>&1 || :
 	/bin/systemctl stop %{name}.service > /dev/null 2>&1 || :
 
@@ -109,18 +113,22 @@ fi
 
 %postun
 if [ "$1" -ge "1" ]; then
-	/sbin/service acpid condrestart >/dev/null 2>&1
-
 	/bin/systemctl daemon-reload >/dev/null 2>&1 || :
 	/bin/systemctl try-restart %{name}.service > /dev/null 2>&1 || :
 fi
 
-%triggerun -- acpid < 2.0.9
-if /sbin/chkconfig --level 3 acpid ; then
-	/bin/systemctl enable acpid.service >/dev/null 2>&1 || :
-fi
+%triggerun -- %{name} < 2.0.10-2
+        /sbin/chkconfig --del acpid >/dev/null 2>&1 || :
+        /bin/systemctl try-restart acpid.service >/dev/null 2>&1 || :
+
+%triggerpostun -n %{name}-sysvinit -- %{name} < 2.0.10-2
+        /sbin/chkconfig --add acpid >/dev/null 2>&1 || :
+
 
 %changelog
+* Mon Jun 27 2011 Jiri Skala <jskala@redhat.com> - 2.0.10-2
+- fixes #716923 - move SysV initscript file into an optional subpackage
+
 * Wed May 18 2011 Jiri Skala <jskala@redhat.com> - 2.0.10-1
 - update to latest upstream 2.0.10
 
