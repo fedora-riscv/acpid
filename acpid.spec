@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 2.0.10
-Release: 2%{?dist}
+Version: 2.0.11
+Release: 1%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://tedfelix.com/linux/acpid-%{version}.tar.gz
@@ -126,6 +126,9 @@ fi
 
 
 %changelog
+* Mon Aug 01 2011 Jiri Skala <jskala@redhat.com> - 2.0.11-1
+- updated to latest upstream 2.0.11
+
 * Mon Jun 27 2011 Jiri Skala <jskala@redhat.com> - 2.0.10-2
 - fixes #716923 - move SysV initscript file into an optional subpackage
 
