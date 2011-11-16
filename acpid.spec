@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 2.0.9
-Release: 4%{?dist}
+Version: 2.0.13
+Release: 1%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://tedfelix.com/linux/acpid-%{version}.tar.gz
@@ -121,6 +121,9 @@ if /sbin/chkconfig --level 3 acpid ; then
 fi
 
 %changelog
+* Wed Nov 16 2011 Jiri Skala <jskala@redhat.com> - 2.0.13-1
+- update to latest upstream 2.0.13
+
 * Fri May 06 2011 Bill Nottingham <notting@redhat.com> - 2.0.9-4
 - fix systemd scriptlets to properly handle upgrade
 
