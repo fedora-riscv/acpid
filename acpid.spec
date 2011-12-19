@@ -1,6 +1,6 @@
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 2.0.13
+Version: 2.0.14
 Release: 1%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
@@ -126,6 +126,9 @@ fi
 
 
 %changelog
+* Mon Dec 19 2011 Jiri Skala <jskala@redhat.com> - 2.0.14-1
+- updated to latest upstream 2.0.14
+
 * Wed Nov 16 2011 Jiri Skala <jskala@redhat.com> - 2.0.13-1
 - updated to latest upstream 2.0.13
 
