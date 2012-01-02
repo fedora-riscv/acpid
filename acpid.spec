@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.14
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://tedfelix.com/linux/acpid-%{version}.tar.gz
@@ -126,6 +126,9 @@ fi
 
 
 %changelog
+* Mon Jan 02 2011 Jiri Skala <jskala@redhat.com> - 2.0.14-2
+- fixes #722325 - xfce4-power-manager does not seem to be supported
+
 * Mon Dec 19 2011 Jiri Skala <jskala@redhat.com> - 2.0.14-1
 - updated to latest upstream 2.0.14
 
