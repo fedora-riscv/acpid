@@ -126,7 +126,7 @@ fi
 
 
 %changelog
-* Mon Jan 02 2011 Jiri Skala <jskala@redhat.com> - 2.0.14-2
+* Mon Jan 02 2012 Jiri Skala <jskala@redhat.com> - 2.0.14-2
 - fixes #722325 - xfce4-power-manager does not seem to be supported
 
 * Mon Dec 19 2011 Jiri Skala <jskala@redhat.com> - 2.0.14-1
