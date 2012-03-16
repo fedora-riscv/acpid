@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 2.0.14
-Release: 3%{?dist}
+Version: 2.0.15
+Release: 1%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://tedfelix.com/linux/acpid-%{version}.tar.gz
@@ -126,6 +126,9 @@ fi
 
 
 %changelog
+* Fri Mar 16 2012 Jiri Skala <jskala@redhat.com> - 2.0.15-1
+- updated to latest upstream 2.0.15
+
 * Thu Jan 12 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.14-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 
