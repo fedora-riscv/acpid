@@ -4,7 +4,7 @@ Version: 2.0.15
 Release: 1%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
-Source: http://tedfelix.com/linux/acpid-%{version}.tar.gz
+Source: http://tedfelix.com/linux/acpid-%{version}.tar.xz
 Source1: acpid.init
 Source2: acpid.video.conf
 Source3: acpid.power.conf
@@ -12,7 +12,7 @@ Source4: acpid.power.sh
 Source5: acpid.service
 Source6: acpid.sysconfig
 
-Patch1: acpid-2.0.2-makefile.patch
+Patch1: acpid-2.0.15-mk.patch
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: ia64 x86_64 %{ix86}
@@ -37,9 +37,10 @@ The acpid-sysvinit contains SysV initscript.
 %prep
 %setup -q
 
-%patch1 -p1 -b .makefile
+%patch1 -p1 -b .mk
 
 %build
+%configure
 make %{?_smp_mflags}
 
 
@@ -81,8 +82,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/sysconfig/acpid
 %{_bindir}/acpi_listen
 %{_sbindir}/acpid
+%{_sbindir}/kacpimon
 %{_mandir}/man8/acpid.8.gz
 %{_mandir}/man8/acpi_listen.8.gz
+%{_mandir}/man8/kacpimon.8.gz
 
 %files sysvinit
 %attr(0755,root,root) %{_sysconfdir}/rc.d/init.d/acpid
