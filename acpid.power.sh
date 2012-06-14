@@ -13,7 +13,7 @@ done
 
 # Get the ID of the first active X11 session: using ConsoleKit
 uid_session=$(
-ck-list-sessions | \
+ck-list-sessions 2>/dev/null | \
 awk '
 /^Session[0-9]+:$/ { uid = active = x11 = "" ; next }
 { gsub(/'\''/, "", $3) }
