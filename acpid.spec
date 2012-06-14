@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.16
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://tedfelix.com/linux/acpid-%{version}.tar.xz
@@ -129,6 +129,10 @@ fi
 
 
 %changelog
+* Thu Jun 14 2012 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.16-2
+- Added support for systemd-loginctl list-sessions
+  Resolves: rhbz#819559
+
 * Thu Mar 29 2012 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.16-1
 - New version
 
