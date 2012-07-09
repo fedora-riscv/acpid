@@ -6,9 +6,8 @@ PATH=/sbin:/bin:/usr/bin
 session_ids=$(systemd-loginctl list-sessions 2>/dev/null | awk '{print $1}')
 for session in ${session_ids} ; do
 	session_status=$(systemd-loginctl session-status ${session})
-	if [ -n "$(echo "${session_status}" | grep "Active: yes" 2> /dev/null)" ]; then
-		echo "${session_status}" | grep -e '\(gnome-settings-daemon\|kded4\|xfce4-power-manager\)' >& /dev/null && exit 0
-	fi
+	echo "${session_status}" | grep -e '\(Active: yes\|State: active\)' &> /dev/null &&
+		echo "${session_status}" | grep -e '\(gnome-settings-daemon\|kded4\|xfce4-power-manager\)' &> /dev/null && exit 0
 done
 
 # Get the ID of the first active X11 session: using ConsoleKit

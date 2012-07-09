@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.16
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://tedfelix.com/linux/acpid-%{version}.tar.xz
@@ -129,6 +129,10 @@ fi
 
 
 %changelog
+* Mon Jul  9 2012 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.16-4
+- Update of power.sh to be compatible with new systemd-loginctl
+  Resolves: rhbz#819547
+
 * Thu Jun 14 2012 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.16-3
 - Silenced possible ck-list-sessions errors in power.sh
 
