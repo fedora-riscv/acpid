@@ -1,10 +1,10 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.18
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
-Source: http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.xz
+Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
 Source1: acpid.init
 Source2: acpid.video.conf
 Source3: acpid.power.conf
@@ -125,6 +125,9 @@ fi
 
 
 %changelog
+* Fri Feb 15 2013 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.18-2
+- Fixed source URL
+
 * Fri Feb 15 2013 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.18-1
 - New version
 - Replaced RPM_BUILD_ROOT variables by {buildroot} macros
