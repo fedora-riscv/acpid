@@ -1,22 +1,19 @@
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 2.0.17
-Release: 2%{?dist}
+Version: 2.0.18
+Release: 1%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
-Source: http://tedfelix.com/linux/acpid-%{version}.tar.xz
+Source: http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.xz
 Source1: acpid.init
 Source2: acpid.video.conf
 Source3: acpid.power.conf
 Source4: acpid.power.sh
 Source5: acpid.service
 Source6: acpid.sysconfig
-
-Patch1: acpid-2.0.15-mk.patch
-
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: ia64 x86_64 %{ix86}
-URL: http://tedfelix.com/linux/acpid-netlink.html
+URL: http://sourceforge.net/projects/acpid2/
 Requires(post): /sbin/chkconfig
 Requires(preun): /sbin/chkconfig
 Requires: systemd-units
@@ -37,7 +34,6 @@ The acpid-sysvinit contains SysV initscript.
 %prep
 %setup -q
 
-%patch1 -p1 -b .mk
 
 %build
 %configure
@@ -45,33 +41,33 @@ make %{?_smp_mflags}
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
+rm -rf %{buildroot}
+mkdir -p %{buildroot}
+make install DESTDIR=%{buildroot} docdir=%{_docdir}/%{name}-%{version}
 
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/acpi/actions
-mkdir -p $RPM_BUILD_ROOT/lib/systemd/system
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
+mkdir -p %{buildroot}%{_sysconfdir}/acpi/events
+mkdir -p %{buildroot}%{_sysconfdir}/acpi/actions
+mkdir -p %{buildroot}/lib/systemd/system
+mkdir -p %{buildroot}%{_sysconfdir}/sysconfig
 
-chmod 755 $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events
-install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events/videoconf
-install -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/events/powerconf
-install -m 755 %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/acpi/actions/power.sh
-install -m 644 %{SOURCE5} $RPM_BUILD_ROOT/lib/systemd/system
-install -m 644 %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/acpid
+chmod 755 %{buildroot}%{_sysconfdir}/acpi/events
+install -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/acpi/events/videoconf
+install -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/acpi/events/powerconf
+install -m 755 %{SOURCE4} %{buildroot}%{_sysconfdir}/acpi/actions/power.sh
+install -m 644 %{SOURCE5} %{buildroot}/lib/systemd/system
+install -m 644 %{SOURCE6} %{buildroot}%{_sysconfdir}/sysconfig/acpid
 
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d
-install -m 755 %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/init.d/acpid
+mkdir -p %{buildroot}%{_sysconfdir}/rc.d/init.d
+install -m 755 %{SOURCE1} %{buildroot}%{_sysconfdir}/rc.d/init.d/acpid
 
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 
 %files
 %defattr(-,root,root)
-%doc COPYING README Changelog TODO TESTPLAN
+%doc %{_docdir}/%{name}-%{version}
 /lib/systemd/system/%{name}.service
 %dir %{_sysconfdir}/acpi
 %dir %{_sysconfdir}/acpi/events
@@ -129,6 +125,12 @@ fi
 
 
 %changelog
+* Fri Feb 15 2013 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.18-1
+- New version
+- Replaced RPM_BUILD_ROOT variables by {buildroot} macros
+- Updated URLs to project home page and source code
+- Dropped mk patch, handled better way in the spec
+
 * Wed Feb 13 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.17-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
