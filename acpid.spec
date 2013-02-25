@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.18
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -16,7 +16,7 @@ ExclusiveArch: ia64 x86_64 %{ix86}
 URL: http://sourceforge.net/projects/acpid2/
 Requires(post): /sbin/chkconfig
 Requires(preun): /sbin/chkconfig
-Requires: systemd-units
+Requires: systemd
 
 
 %description
@@ -99,22 +99,13 @@ if [ "$1" = "2" ]; then
 fi
 
 %post
-if [ $1 -eq 1 ]; then
-	/bin/systemctl enable %{name}.service > /dev/null 2>&1 || :
-fi
+%systemd_post %{name}.service
 
 %preun
-if [ "$1" = "0" ]; then
-	/bin/systemctl disable %{name}.service > /dev/null 2>&1 || :
-	/bin/systemctl stop %{name}.service > /dev/null 2>&1 || :
-
-fi
+%systemd_preun %{name}.service
 
 %postun
-if [ "$1" -ge "1" ]; then
-	/bin/systemctl daemon-reload >/dev/null 2>&1 || :
-	/bin/systemctl try-restart %{name}.service > /dev/null 2>&1 || :
-fi
+%systemd_postun_with_restart %{name}.service
 
 %triggerun -- %{name} < 2.0.10-2
         /sbin/chkconfig --del acpid >/dev/null 2>&1 || :
@@ -125,6 +116,10 @@ fi
 
 
 %changelog
+* Mon Feb 25 2013 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.18-3
+- Switched to systemd-rpm macros
+  Resolves: rhbz#850020
+
 * Fri Feb 15 2013 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.18-2
 - Fixed source URL
 
