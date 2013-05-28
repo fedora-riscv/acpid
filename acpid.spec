@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 2.0.18
-Release: 3%{?dist}
+Version: 2.0.19
+Release: 1%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -116,6 +116,9 @@ fi
 
 
 %changelog
+* Tue May 28 2013 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.19-1
+- New version
+
 * Mon Feb 25 2013 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.18-3
 - Switched to systemd-rpm macros
   Resolves: rhbz#850020
