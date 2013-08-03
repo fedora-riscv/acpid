@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.19
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -116,6 +116,9 @@ fi
 
 
 %changelog
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.19-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Tue May 28 2013 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.19-1
 - New version
 
