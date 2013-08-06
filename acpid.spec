@@ -1,7 +1,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.19
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -43,7 +43,7 @@ make %{?_smp_mflags}
 %install
 rm -rf %{buildroot}
 mkdir -p %{buildroot}
-make install DESTDIR=%{buildroot} docdir=%{_docdir}/%{name}-%{version}
+make install DESTDIR=%{buildroot} docdir=%{_docdir}/%{name}
 
 mkdir -p %{buildroot}%{_sysconfdir}/acpi/events
 mkdir -p %{buildroot}%{_sysconfdir}/acpi/actions
@@ -67,7 +67,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
-%doc %{_docdir}/%{name}-%{version}
+%doc %{_docdir}/%{name}
 /lib/systemd/system/%{name}.service
 %dir %{_sysconfdir}/acpi
 %dir %{_sysconfdir}/acpi/events
@@ -116,6 +116,10 @@ fi
 
 
 %changelog
+* Tue Aug  6 2013 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.19-3
+- Used unversioned docs
+  Resolves: rhbz#993661
+
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.19-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
