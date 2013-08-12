@@ -1,7 +1,14 @@
+# hardened build if not overrided
+%{!?_hardened_build:%global _hardened_build 1}
+
+%if %{?_hardened_build:%{_hardened_build}}%{!?_hardened_build:0}
+%global harden -pie -Wl,-z,relro,-z,now
+%endif
+
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.19
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -38,7 +45,7 @@ The acpid-sysvinit contains SysV initscript.
 
 %build
 %configure
-make %{?_smp_mflags}
+make %{?_smp_mflags} CFLAGS="%{optflags} %{?harden}"
 
 
 %install
@@ -117,6 +124,10 @@ fi
 
 
 %changelog
+* Mon Aug 12 2013 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.19-5
+- Hardened build
+  Resolves: rhbz#983609
+
 * Fri Aug  9 2013 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.19-4
 - Fixed systemd requires
   Resolves: rhbz#995158
