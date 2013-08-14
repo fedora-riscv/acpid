@@ -8,7 +8,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.19
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -21,6 +21,7 @@ Source6: acpid.sysconfig
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: ia64 x86_64 %{ix86}
 URL: http://sourceforge.net/projects/acpid2/
+BuildRequires: systemd
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
@@ -124,6 +125,10 @@ fi
 
 
 %changelog
+* Wed Aug 14 2013 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.19-6
+- Added systemd build requires
+  Resolves: rhbz#995158
+
 * Mon Aug 12 2013 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.19-5
 - Hardened build
   Resolves: rhbz#983609
