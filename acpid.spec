@@ -7,8 +7,8 @@
 
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 2.0.19
-Release: 6%{?dist}
+Version: 2.0.20
+Release: 1%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -125,6 +125,11 @@ fi
 
 
 %changelog
+* Mon Sep 16 2013 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.20-1
+- New version
+  Resolves: rhbz#1008344
+- Fixed bogus date in changelog (best effort)
+
 * Wed Aug 14 2013 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.19-6
 - Added systemd build requires
   Resolves: rhbz#995158
@@ -296,7 +301,7 @@ fi
 - Fixed socket leak (#394431)
 - Fixed dumping useless info to log (#389581)
 
-* Thu Oct 23 2007 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.6-3.fc9
+* Tue Oct 23 2007 Zdenek Prikryl <zprikryl@redhat.com> - 1.0.6-3.fc9
 - Silent initscript
 - Resolves: #345611
 
