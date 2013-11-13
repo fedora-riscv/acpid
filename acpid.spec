@@ -8,7 +8,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.20
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -102,7 +102,7 @@ if [ "$1" = "2" ]; then
 	if [ $RETCODE -eq 0 ]; then
 		for i in $conflist; do
 			rmdot=`echo $i | sed 's/.conf/conf/'`
-	 		mv $i $rmdot
+			mv $i $rmdot
 		done
 	fi
 fi
@@ -125,6 +125,10 @@ fi
 
 
 %changelog
+* Wed Nov 13 2013 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.20-2
+- Fixed loginctl and added support for cinnamon and mate (patch by Leigh Scott)
+  Resolves: rhbz#1029868
+
 * Mon Sep 16 2013 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.20-1
 - New version
   Resolves: rhbz#1008344
