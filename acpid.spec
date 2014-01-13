@@ -8,7 +8,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.20
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -18,6 +18,7 @@ Source3: acpid.power.conf
 Source4: acpid.power.sh
 Source5: acpid.service
 Source6: acpid.sysconfig
+Source7: acpid.socket
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: ia64 x86_64 %{ix86}
 URL: http://sourceforge.net/projects/acpid2/
@@ -63,7 +64,7 @@ chmod 755 %{buildroot}%{_sysconfdir}/acpi/events
 install -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/acpi/events/videoconf
 install -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/acpi/events/powerconf
 install -m 755 %{SOURCE4} %{buildroot}%{_sysconfdir}/acpi/actions/power.sh
-install -m 644 %{SOURCE5} %{buildroot}/lib/systemd/system
+install -m 644 %{SOURCE5} %{SOURCE7} %{buildroot}/lib/systemd/system
 install -m 644 %{SOURCE6} %{buildroot}%{_sysconfdir}/sysconfig/acpid
 
 mkdir -p %{buildroot}%{_sysconfdir}/rc.d/init.d
@@ -78,6 +79,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %doc %{_docdir}/%{name}
 /lib/systemd/system/%{name}.service
+/lib/systemd/system/%{name}.socket
 %dir %{_sysconfdir}/acpi
 %dir %{_sysconfdir}/acpi/events
 %dir %{_sysconfdir}/acpi/actions
@@ -108,23 +110,26 @@ if [ "$1" = "2" ]; then
 fi
 
 %post
-%systemd_post %{name}.service
+%systemd_post %{name}.socket %{name}.service
 
 %preun
-%systemd_preun %{name}.service
+%systemd_preun %{name}.socket %{name}.service
 
 %postun
-%systemd_postun_with_restart %{name}.service
+%systemd_postun_with_restart %{name}.socket %{name}.service
 
 %triggerun -- %{name} < 2.0.10-2
-        /sbin/chkconfig --del acpid >/dev/null 2>&1 || :
-        /bin/systemctl try-restart acpid.service >/dev/null 2>&1 || :
+	/sbin/chkconfig --del acpid >/dev/null 2>&1 || :
+	/bin/systemctl try-restart acpid.service >/dev/null 2>&1 || :
 
 %triggerpostun -n %{name}-sysvinit -- %{name} < 2.0.10-2
-        /sbin/chkconfig --add acpid >/dev/null 2>&1 || :
+	/sbin/chkconfig --add acpid >/dev/null 2>&1 || :
 
 
 %changelog
+* Fri Jan 10 2014 Ville Skyttä <ville.skytta@iki.fi> - 2.0.20-3
+- Use socket activation, fix rpmlint tabs vs spaces warnings.
+
 * Wed Nov 13 2013 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.20-2
 - Fixed loginctl and added support for cinnamon and mate (patch by Leigh Scott)
   Resolves: rhbz#1029868
