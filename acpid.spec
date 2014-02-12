@@ -7,8 +7,8 @@
 
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 2.0.20
-Release: 3%{?dist}
+Version: 2.0.21
+Release: 1%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -127,6 +127,10 @@ fi
 
 
 %changelog
+* Wed Feb 12 2014 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.21-1
+- New version
+  Resolves: rhbz#1054057
+
 * Fri Jan 10 2014 Ville Skyttä <ville.skytta@iki.fi> - 2.0.20-3
 - Use socket activation, fix rpmlint tabs vs spaces warnings.
 
