@@ -7,8 +7,8 @@
 
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 2.0.20
-Release: 2%{?dist}
+Version: 2.0.21
+Release: 1%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -125,6 +125,10 @@ fi
 
 
 %changelog
+* Wed Feb 12 2014 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.21-1
+- New version
+  Resolves: rhbz#1054057
+
 * Wed Nov 13 2013 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.20-2
 - Fixed loginctl and added support for cinnamon and mate (patch by Leigh Scott)
   Resolves: rhbz#1029868
