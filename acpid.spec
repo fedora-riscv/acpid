@@ -8,7 +8,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.21
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -57,14 +57,14 @@ make install DESTDIR=%{buildroot} docdir=%{_docdir}/%{name}
 
 mkdir -p %{buildroot}%{_sysconfdir}/acpi/events
 mkdir -p %{buildroot}%{_sysconfdir}/acpi/actions
-mkdir -p %{buildroot}/lib/systemd/system
+mkdir -p %{buildroot}%{_unitdir}
 mkdir -p %{buildroot}%{_sysconfdir}/sysconfig
 
 chmod 755 %{buildroot}%{_sysconfdir}/acpi/events
 install -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/acpi/events/videoconf
 install -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/acpi/events/powerconf
 install -m 755 %{SOURCE4} %{buildroot}%{_sysconfdir}/acpi/actions/power.sh
-install -m 644 %{SOURCE5} %{SOURCE7} %{buildroot}/lib/systemd/system
+install -m 644 %{SOURCE5} %{SOURCE7} %{buildroot}%{_unitdir}
 install -m 644 %{SOURCE6} %{buildroot}%{_sysconfdir}/sysconfig/acpid
 
 mkdir -p %{buildroot}%{_sysconfdir}/rc.d/init.d
@@ -78,8 +78,8 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root)
 %doc %{_docdir}/%{name}
-/lib/systemd/system/%{name}.service
-/lib/systemd/system/%{name}.socket
+%{_unitdir}/%{name}.service
+%{_unitdir}/%{name}.socket
 %dir %{_sysconfdir}/acpi
 %dir %{_sysconfdir}/acpi/events
 %dir %{_sysconfdir}/acpi/actions
@@ -127,6 +127,9 @@ fi
 
 
 %changelog
+* Tue Feb 18 2014 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.21-2
+- Used unitdir macro instead of the hardcoded systemd paths
+
 * Wed Feb 12 2014 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.21-1
 - New version
   Resolves: rhbz#1054057
