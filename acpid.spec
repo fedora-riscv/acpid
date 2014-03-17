@@ -7,8 +7,8 @@
 
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 2.0.21
-Release: 2%{?dist}
+Version: 2.0.22
+Release: 1%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -127,6 +127,9 @@ fi
 
 
 %changelog
+* Mon Mar 17 2014 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.22-1
+- New version
+
 * Tue Feb 18 2014 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.21-2
 - Used unitdir macro instead of the hardcoded systemd paths
 
