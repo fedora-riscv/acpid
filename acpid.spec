@@ -8,7 +8,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.22
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -20,7 +20,7 @@ Source5: acpid.service
 Source6: acpid.sysconfig
 Source7: acpid.socket
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-ExclusiveArch: ia64 x86_64 %{ix86}
+ExclusiveArch: ia64 x86_64 %{ix86} %{arm} aarch64
 URL: http://sourceforge.net/projects/acpid2/
 BuildRequires: systemd
 Requires(post): systemd
@@ -127,6 +127,9 @@ fi
 
 
 %changelog
+* Fri May 23 2014 Dennis Gilmore <dennis@ausil.us> - 2.0.22-2
+- enable building on aarch64 and 32 bit arm
+
 * Mon Mar 17 2014 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.22-1
 - New version
 
