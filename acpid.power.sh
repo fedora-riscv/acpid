@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH=/sbin:/bin:/usr/bin
+PATH=/usr/sbin:/usr/bin
 
 # Check session status using systemd
 session_ids=$(loginctl list-sessions 2>/dev/null | awk '{print $1}')
