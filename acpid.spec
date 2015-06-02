@@ -8,7 +8,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.23
-Release: 2%{?dist}
+Release: 4%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -32,6 +32,7 @@ Requires: systemd
 %description
 acpid is a daemon that dispatches ACPI events to user-space programs.
 
+%if 0%{?fedora} < 23
 %package sysvinit
 Summary: ACPI Event Daemon
 Group: System Environment/Daemons
@@ -40,6 +41,7 @@ Requires(preun): /sbin/service
 
 %description sysvinit
 The acpid-sysvinit contains SysV initscript.
+%endif
 
 %prep
 %setup -q
@@ -67,8 +69,10 @@ install -m 755 %{SOURCE4} %{buildroot}%{_sysconfdir}/acpi/actions/power.sh
 install -m 644 %{SOURCE5} %{SOURCE7} %{buildroot}%{_unitdir}
 install -m 644 %{SOURCE6} %{buildroot}%{_sysconfdir}/sysconfig/acpid
 
+%if 0%{?fedora} < 23
 mkdir -p %{buildroot}%{_sysconfdir}/rc.d/init.d
 install -m 755 %{SOURCE1} %{buildroot}%{_sysconfdir}/rc.d/init.d/acpid
+%endif
 
 
 %clean
@@ -94,8 +98,10 @@ rm -rf %{buildroot}
 %{_mandir}/man8/acpi_listen.8.gz
 %{_mandir}/man8/kacpimon.8.gz
 
+%if 0%{?fedora} < 23
 %files sysvinit
 %attr(0755,root,root) %{_sysconfdir}/rc.d/init.d/acpid
+%endif
 
 %pre
 if [ "$1" = "2" ]; then
@@ -122,14 +128,22 @@ fi
 	/sbin/chkconfig --del acpid >/dev/null 2>&1 || :
 	/bin/systemctl try-restart acpid.service >/dev/null 2>&1 || :
 
+%if 0%{?fedora} < 23
 %triggerpostun -n %{name}-sysvinit -- %{name} < 2.0.10-2
 	/sbin/chkconfig --add acpid >/dev/null 2>&1 || :
+%endif
 
 
 %changelog
-* Tue May 19 2015 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.23-2
+* Tue Jun  2 2015 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.23-4
+- Used socket for stdin to support socket activation
+
+* Tue May 19 2015 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.23-3
 - Changed PATH to /usr/sbin:/usr/bin in power.sh
   Resolves: rhbz#1192817
+
+* Thu Mar 05 2015 Adam Jackson <ajax@redhat.com> 2.0.23-2
+- Drop sysvinit subpackage in F23+
 
 * Tue Aug 26 2014 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.23-1
 - New version
