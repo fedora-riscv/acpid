@@ -8,7 +8,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.23
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -135,6 +135,9 @@ fi
 
 
 %changelog
+* Tue Jun  2 2015 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.23-4
+- Used socket for stdin to support socket activation
+
 * Tue May 19 2015 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.23-3
 - Changed PATH to /usr/sbin:/usr/bin in power.sh
   Resolves: rhbz#1192817
