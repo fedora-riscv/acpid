@@ -1,4 +1,4 @@
-# hardened build if not overrided
+# hardened build if not overridden
 %{!?_hardened_build:%global _hardened_build 1}
 
 %if %{?_hardened_build}%{!?_hardened_build:0}
@@ -8,7 +8,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.25
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -135,6 +135,9 @@ fi
 
 
 %changelog
+* Wed Sep  2 2015 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.25-3
+- Fixed typo
+
 * Wed Sep  2 2015 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.25-2
 - Simplified macros check related to hardening
 
