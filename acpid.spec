@@ -8,7 +8,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.25
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -63,15 +63,15 @@ mkdir -p %{buildroot}%{_unitdir}
 mkdir -p %{buildroot}%{_sysconfdir}/sysconfig
 
 chmod 755 %{buildroot}%{_sysconfdir}/acpi/events
-install -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/acpi/events/videoconf
-install -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/acpi/events/powerconf
-install -m 755 %{SOURCE4} %{buildroot}%{_sysconfdir}/acpi/actions/power.sh
-install -m 644 %{SOURCE5} %{SOURCE7} %{buildroot}%{_unitdir}
-install -m 644 %{SOURCE6} %{buildroot}%{_sysconfdir}/sysconfig/acpid
+install -p -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/acpi/events/videoconf
+install -p -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/acpi/events/powerconf
+install -p -m 755 %{SOURCE4} %{buildroot}%{_sysconfdir}/acpi/actions/power.sh
+install -p -m 644 %{SOURCE5} %{SOURCE7} %{buildroot}%{_unitdir}
+install -p -m 644 %{SOURCE6} %{buildroot}%{_sysconfdir}/sysconfig/acpid
 
 %if 0%{?fedora} < 23
 mkdir -p %{buildroot}%{_sysconfdir}/rc.d/init.d
-install -m 755 %{SOURCE1} %{buildroot}%{_sysconfdir}/rc.d/init.d/acpid
+install -p -m 755 %{SOURCE1} %{buildroot}%{_sysconfdir}/rc.d/init.d/acpid
 %endif
 
 
@@ -135,6 +135,9 @@ fi
 
 
 %changelog
+* Thu Nov 12 2015 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.25-4
+- Preserve timestamps on installed files
+
 * Wed Sep  2 2015 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.25-3
 - Fixed typo
 
