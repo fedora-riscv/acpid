@@ -1,14 +1,14 @@
-# hardened build if not overrided
+# hardened build if not overridden
 %{!?_hardened_build:%global _hardened_build 1}
 
-%if %{?_hardened_build:%{_hardened_build}}%{!?_hardened_build:0}
+%if %{?_hardened_build}%{!?_hardened_build:0}
 %global harden -pie -Wl,-z,relro,-z,now
 %endif
 
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 2.0.23
-Release: 4%{?dist}
+Version: 2.0.27
+Release: 1%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -63,15 +63,15 @@ mkdir -p %{buildroot}%{_unitdir}
 mkdir -p %{buildroot}%{_sysconfdir}/sysconfig
 
 chmod 755 %{buildroot}%{_sysconfdir}/acpi/events
-install -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/acpi/events/videoconf
-install -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/acpi/events/powerconf
-install -m 755 %{SOURCE4} %{buildroot}%{_sysconfdir}/acpi/actions/power.sh
-install -m 644 %{SOURCE5} %{SOURCE7} %{buildroot}%{_unitdir}
-install -m 644 %{SOURCE6} %{buildroot}%{_sysconfdir}/sysconfig/acpid
+install -p -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/acpi/events/videoconf
+install -p -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/acpi/events/powerconf
+install -p -m 755 %{SOURCE4} %{buildroot}%{_sysconfdir}/acpi/actions/power.sh
+install -p -m 644 %{SOURCE5} %{SOURCE7} %{buildroot}%{_unitdir}
+install -p -m 644 %{SOURCE6} %{buildroot}%{_sysconfdir}/sysconfig/acpid
 
 %if 0%{?fedora} < 23
 mkdir -p %{buildroot}%{_sysconfdir}/rc.d/init.d
-install -m 755 %{SOURCE1} %{buildroot}%{_sysconfdir}/rc.d/init.d/acpid
+install -p -m 755 %{SOURCE1} %{buildroot}%{_sysconfdir}/rc.d/init.d/acpid
 %endif
 
 
@@ -135,6 +135,29 @@ fi
 
 
 %changelog
+* Wed Mar 16 2016 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.27-1
+- New version
+  Resolves: rhbz#1299109
+
+* Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 2.0.25-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
+* Thu Nov 12 2015 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.25-4
+- Preserve timestamps on installed files
+
+* Wed Sep  2 2015 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.25-3
+- Fixed typo
+
+* Wed Sep  2 2015 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.25-2
+- Simplified macros check related to hardening
+
+* Mon Aug 17 2015 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.25-1
+- New version
+  Resolves: rhbz#1253985
+
+* Tue Jun 16 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.0.23-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Tue Jun  2 2015 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.23-4
 - Used socket for stdin to support socket activation
 
