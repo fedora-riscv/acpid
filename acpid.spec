@@ -8,7 +8,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.27
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -135,6 +135,10 @@ fi
 
 
 %changelog
+* Wed Jul 20 2016 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.27-2
+- Added exception for kded5 to power.sh
+  Resolves: rhbz#1319885
+
 * Wed Mar 16 2016 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.27-1
 - New version
   Resolves: rhbz#1299109
