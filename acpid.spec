@@ -8,7 +8,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.27
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -135,6 +135,10 @@ fi
 
 
 %changelog
+* Wed Aug  3 2016 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.27-4
+- Fixed service autostart (if enabled)
+  Resolves: rhbz#1363632
+
 * Wed Jul 20 2016 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.27-3
 - Added exception for plasmashell to power.sh
   Related: rhbz#1319885
