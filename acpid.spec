@@ -7,8 +7,8 @@
 
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 2.0.27
-Release: 4%{?dist}
+Version: 2.0.28
+Release: 1%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -135,6 +135,10 @@ fi
 
 
 %changelog
+* Fri Sep 16 2016 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.28-1
+- New version
+  Resolves: rhbz#1376618
+
 * Wed Aug  3 2016 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.27-4
 - Fixed service autostart (if enabled)
   Resolves: rhbz#1363632
