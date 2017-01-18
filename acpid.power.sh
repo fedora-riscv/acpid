@@ -2,12 +2,19 @@
 
 PATH=/usr/sbin:/usr/bin
 
+# $1 = session number
+function get_session_processes() {
+	local uid=$(loginctl show-session $1 | grep '^User=' | sed -r -e 's/^User=(.*)$/\1/')
+	systemd-cgls "/user.slice/user-${uid}.slice/session-${1}.scope"
+}
+
 # Check session status using systemd
 session_ids=$(loginctl list-sessions 2>/dev/null | awk '{print $1}')
 for session in ${session_ids} ; do
-	session_status=$(loginctl session-status ${session})
-	echo "${session_status}" | grep -e '\(Active: yes\|State: active\)' &> /dev/null &&
-		echo "${session_status}" | grep -e '\(gnome-settings-daemon\|cinnamon-settings-daemon\|kded[4-5]\|plasmashell\|xfce4-power-manager\|mate-power-manager\)' &> /dev/null && exit 0
+	session_status=$(loginctl show-session ${session})
+	session_processes="$(get_session_processes ${session})"
+	echo "${session_status}" | grep -e 'Active=yes' &> /dev/null &&
+		echo "${session_processes}" | grep -e '\(gnome-settings-daemon\|cinnamon-settings-daemon\|kded[4-5]\|plasmashell\|xfce4-power-manager\|mate-power-manager\)' &> /dev/null && exit 0
 done
 
 # Get the ID of the first active X11 session: using ConsoleKit

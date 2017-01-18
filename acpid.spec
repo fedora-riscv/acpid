@@ -8,7 +8,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.28
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -135,6 +135,10 @@ fi
 
 
 %changelog
+* Wed Jan 18 2017 Ondřej Lysoněk <olysonek@redhat.com> - 2.0.28-2
+- Fixed obtaining process list in power.sh to avoid SELinux denials
+  Resolves: rhbz#1408457
+
 * Fri Sep 16 2016 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.28-1
 - New version
   Resolves: rhbz#1376618
