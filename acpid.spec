@@ -8,7 +8,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.28
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -19,6 +19,8 @@ Source4: acpid.power.sh
 Source5: acpid.service
 Source6: acpid.sysconfig
 Source7: acpid.socket
+# https://sourceforge.net/p/acpid2/tickets/14/
+Patch0: acpid-2.0.28-kacpimon-dynamic-connections.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: ia64 x86_64 %{ix86} %{arm} aarch64
 URL: http://sourceforge.net/projects/acpid2/
@@ -27,7 +29,6 @@ Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
 Requires: systemd
-
 
 %description
 acpid is a daemon that dispatches ACPI events to user-space programs.
@@ -45,12 +46,11 @@ The acpid-sysvinit contains SysV initscript.
 
 %prep
 %setup -q
-
+%patch0 -p1 -b .kacpimon-dynamic-connections
 
 %build
 %configure
 make %{?_smp_mflags} CFLAGS="%{optflags} %{?harden}"
-
 
 %install
 rm -rf %{buildroot}
@@ -74,10 +74,8 @@ mkdir -p %{buildroot}%{_sysconfdir}/rc.d/init.d
 install -p -m 755 %{SOURCE1} %{buildroot}%{_sysconfdir}/rc.d/init.d/acpid
 %endif
 
-
 %clean
 rm -rf %{buildroot}
-
 
 %files
 %defattr(-,root,root)
@@ -133,8 +131,13 @@ fi
 	/sbin/chkconfig --add acpid >/dev/null 2>&1 || :
 %endif
 
-
 %changelog
+* Thu Aug 31 2017 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.28-6
+- Switched kacpimon to dynamic connections (increased max connections
+  from 20 to 1024)
+  Resolves: rhbz#1450980
+- Consolidated new line delimiters
+
 * Wed Aug 02 2017 Fedora Release Engineering <releng@fedoraproject.org> - 2.0.28-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 
