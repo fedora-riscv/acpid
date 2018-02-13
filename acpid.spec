@@ -21,7 +21,6 @@ Source6: acpid.sysconfig
 Source7: acpid.socket
 # https://sourceforge.net/p/acpid2/tickets/14/
 Patch0: acpid-2.0.28-kacpimon-dynamic-connections.patch
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 ExclusiveArch: ia64 x86_64 %{ix86} %{arm} aarch64
 URL: http://sourceforge.net/projects/acpid2/
 BuildRequires: systemd
