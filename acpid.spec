@@ -73,9 +73,6 @@ mkdir -p %{buildroot}%{_sysconfdir}/rc.d/init.d
 install -p -m 755 %{SOURCE1} %{buildroot}%{_sysconfdir}/rc.d/init.d/acpid
 %endif
 
-%clean
-rm -rf %{buildroot}
-
 %files
 %defattr(-,root,root)
 %doc %{_docdir}/%{name}
