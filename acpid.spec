@@ -8,7 +8,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.28
-Release: 7%{?dist}
+Release: 8%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -23,7 +23,7 @@ Source7: acpid.socket
 Patch0: acpid-2.0.28-kacpimon-dynamic-connections.patch
 ExclusiveArch: ia64 x86_64 %{ix86} %{arm} aarch64
 URL: http://sourceforge.net/projects/acpid2/
-BuildRequires: systemd
+BuildRequires: systemd, gcc
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
@@ -128,6 +128,9 @@ fi
 %endif
 
 %changelog
+* Mon Feb 19 2018 Ondřej Lysoněk <olysonek@redhat.com> - 2.0.28-8
+- Add gcc to BuildRequires
+
 * Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 2.0.28-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
