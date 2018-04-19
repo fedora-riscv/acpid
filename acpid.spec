@@ -7,8 +7,8 @@
 
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 2.0.28
-Release: 8%{?dist}
+Version: 2.0.29
+Release: 1%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
@@ -128,6 +128,10 @@ fi
 %endif
 
 %changelog
+* Thu Apr 19 2018 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.29-1
+- New version
+  Resolves: rhbz#1568392
+
 * Mon Feb 19 2018 Ondřej Lysoněk <olysonek@redhat.com> - 2.0.28-8
 - Add gcc to BuildRequires
 
