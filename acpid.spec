@@ -74,7 +74,6 @@ install -p -m 755 %{SOURCE1} %{buildroot}%{_sysconfdir}/rc.d/init.d/acpid
 %endif
 
 %files
-%defattr(-,root,root)
 %doc %{_docdir}/%{name}
 %{_unitdir}/%{name}.service
 %{_unitdir}/%{name}.socket
