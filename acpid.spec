@@ -8,11 +8,10 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.30
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPLv2+
 Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
-Source1: acpid.init
 Source2: acpid.video.conf
 Source3: acpid.power.conf
 Source4: acpid.power.sh
@@ -31,17 +30,6 @@ Requires: systemd
 
 %description
 acpid is a daemon that dispatches ACPI events to user-space programs.
-
-%if 0%{?fedora} < 23
-%package sysvinit
-Summary: ACPI Event Daemon
-Group: System Environment/Daemons
-Requires: %{name} = %{version}-%{release}
-Requires(preun): /sbin/service
-
-%description sysvinit
-The acpid-sysvinit contains SysV initscript.
-%endif
 
 %prep
 %setup -q
@@ -68,11 +56,6 @@ install -p -m 755 %{SOURCE4} %{buildroot}%{_sysconfdir}/acpi/actions/power.sh
 install -p -m 644 %{SOURCE5} %{SOURCE7} %{buildroot}%{_unitdir}
 install -p -m 644 %{SOURCE6} %{buildroot}%{_sysconfdir}/sysconfig/acpid
 
-%if 0%{?fedora} < 23
-mkdir -p %{buildroot}%{_sysconfdir}/rc.d/init.d
-install -p -m 755 %{SOURCE1} %{buildroot}%{_sysconfdir}/rc.d/init.d/acpid
-%endif
-
 %files
 %doc %{_docdir}/%{name}
 %{_unitdir}/%{name}.service
@@ -90,11 +73,6 @@ install -p -m 755 %{SOURCE1} %{buildroot}%{_sysconfdir}/rc.d/init.d/acpid
 %{_mandir}/man8/acpid.8.gz
 %{_mandir}/man8/acpi_listen.8.gz
 %{_mandir}/man8/kacpimon.8.gz
-
-%if 0%{?fedora} < 23
-%files sysvinit
-%attr(0755,root,root) %{_sysconfdir}/rc.d/init.d/acpid
-%endif
 
 %pre
 if [ "$1" = "2" ]; then
@@ -121,12 +99,10 @@ fi
 	/sbin/chkconfig --del acpid >/dev/null 2>&1 || :
 	/bin/systemctl try-restart acpid.service >/dev/null 2>&1 || :
 
-%if 0%{?fedora} < 23
-%triggerpostun -n %{name}-sysvinit -- %{name} < 2.0.10-2
-	/sbin/chkconfig --add acpid >/dev/null 2>&1 || :
-%endif
-
 %changelog
+* Thu Nov 15 2018 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.30-2
+- Dropped sysvinit support
+
 * Thu Jul 19 2018 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.30-1
 - New version
   Resolves: rhbz#1602974
