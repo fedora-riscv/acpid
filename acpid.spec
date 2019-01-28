@@ -10,7 +10,6 @@ Name: acpid
 Version: 2.0.30
 Release: 2%{?dist}
 License: GPLv2+
-Group: System Environment/Daemons
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
 Source2: acpid.video.conf
 Source3: acpid.power.conf
