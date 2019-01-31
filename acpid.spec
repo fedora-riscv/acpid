@@ -8,7 +8,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.30
-Release: 2%{?dist}
+Release: 3%{?dist}
 License: GPLv2+
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
 Source2: acpid.video.conf
@@ -99,6 +99,9 @@ fi
 	/bin/systemctl try-restart acpid.service >/dev/null 2>&1 || :
 
 %changelog
+* Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2.0.30-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
 * Thu Nov 15 2018 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.30-2
 - Dropped sysvinit support
 
