@@ -14,7 +14,7 @@ index 9b0b0a8..f228186 100644
  /*---------------------------------------------------------------*/
  /* private objects */
  
--#define MAX_CONNECTIONS 20
+-#define MAX_CONNECTIONS 100
 +static int capacity = 0;
  
 -static struct connection connection_list[MAX_CONNECTIONS];

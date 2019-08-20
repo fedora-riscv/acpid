@@ -7,8 +7,8 @@
 
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 2.0.30
-Release: 4%{?dist}
+Version: 2.0.32
+Release: 1%{?dist}
 License: GPLv2+
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
 Source2: acpid.video.conf
@@ -18,7 +18,7 @@ Source5: acpid.service
 Source6: acpid.sysconfig
 Source7: acpid.socket
 # https://sourceforge.net/p/acpid2/tickets/14/
-Patch0: acpid-2.0.28-kacpimon-dynamic-connections.patch
+Patch0: acpid-2.0.32-kacpimon-dynamic-connections.patch
 ExclusiveArch: ia64 x86_64 %{ix86} %{arm} aarch64
 URL: http://sourceforge.net/projects/acpid2/
 BuildRequires: systemd, gcc
@@ -99,6 +99,10 @@ fi
 	/bin/systemctl try-restart acpid.service >/dev/null 2>&1 || :
 
 %changelog
+* Tue Aug 20 2019 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.32-1
+- New version
+  Resolves: rhbz#1742776
+
 * Wed Jul 24 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2.0.30-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
