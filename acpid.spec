@@ -22,6 +22,7 @@ Patch0: acpid-2.0.32-kacpimon-dynamic-connections.patch
 ExclusiveArch: ia64 x86_64 %{ix86} %{arm} aarch64
 URL: http://sourceforge.net/projects/acpid2/
 BuildRequires: systemd, gcc
+BuildRequires: make
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
