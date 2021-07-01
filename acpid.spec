@@ -8,7 +8,7 @@
 Summary: ACPI Event Daemon
 Name: acpid
 Version: 2.0.32
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: GPLv2+
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
 Source2: acpid.video.conf
@@ -100,6 +100,9 @@ fi
 	/bin/systemctl try-restart acpid.service >/dev/null 2>&1 || :
 
 %changelog
+* Thu Jul 01 2021 FeRD (Frank Dana) <ferdnyc@gmail.com> - 2.0.32-6
+- Updated socket path from /var/run => /run in acpid.socket
+
 * Tue Mar 02 2021 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 2.0.32-5
 - Rebuilt for updated systemd-rpm-macros
   See https://pagure.io/fesco/issue/2583.
