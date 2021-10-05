@@ -7,8 +7,8 @@
 
 Summary: ACPI Event Daemon
 Name: acpid
-Version: 2.0.32
-Release: 7%{?dist}
+Version: 2.0.33
+Release: 1%{?dist}
 License: GPLv2+
 Source: http://downloads.sourceforge.net/acpid2/%{name}-%{version}.tar.xz
 Source2: acpid.video.conf
@@ -100,6 +100,10 @@ fi
 	/bin/systemctl try-restart acpid.service >/dev/null 2>&1 || :
 
 %changelog
+* Tue Oct  5 2021 Jaroslav Škarvada <jskarvad@redhat.com> - 2.0.33-1
+- New version
+  Resolves: rhbz#2004773
+
 * Wed Jul 21 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.0.32-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
 
